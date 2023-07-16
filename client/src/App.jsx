@@ -1,15 +1,12 @@
-import Axios from "axios";
-Axios.defaults.baseURL = import.meta.env.VITE_APP_URL;
+// import React from 'react'
 
-console.log(import.meta.env.VITE_APP_URL)
-function App() {
+import { useContext } from "react"
+import { UtilContext } from "./context/UtilContext"
+
+export const App = () => {
   return (
-    <>
-      <div>
-        My React App
-      </div>
-    </>
+    <div>
+      App
+    </div>
   )
 }
-
-export default App
