@@ -1,7 +1,7 @@
 import React from "react"
-import {useNavigate, createBrowserRouter, useRouteError} from "react-router-dom" 
-import {App} from './App'
+import {useNavigate, createBrowserRouter, useRouteError} from "react-router-dom"
 import {Layout} from './layout/Layout'
+import { LandingPage } from "./views/LandingPage"
 
 const router = createBrowserRouter([
   {
@@ -10,7 +10,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: '',
-        element: <App />
+        element: <LandingPage />
       }
     ]
   },
