@@ -2,12 +2,14 @@ import React, { useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { NavBar } from "../components/NavBar";
 import { Header } from "../components/Header"
+import { AboveHead } from "../components/AboveHead";
 
 export const Layout = () => {
   // const [isSelected, setIsSelected] = useState("1");
   
   return (
     <div className="min-h-screen flex flex-col overflow-auto">
+      <AboveHead/>
       <NavBar />
       <Header />
         <main className="
