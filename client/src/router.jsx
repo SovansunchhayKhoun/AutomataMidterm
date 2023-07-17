@@ -1,21 +1,26 @@
 import React from "react"
 import {useNavigate, createBrowserRouter, useRouteError} from "react-router-dom"
 import {Layout} from './layout/Layout'
-import { LandingPage } from "./views/LandingPage"
 import { ExerciseUI } from "./views/ExerciseUI"
+import { ConstructFa } from "./views/ConstructFa"
+import { MinimizedDfa } from "./views/MinimizedDfa"
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <Layout />,
+    element: <Layout/>,
     children: [
       {
         path: '',
-        element: <LandingPage />
+        element: <ConstructFa/>
       },
       {
-        path: '/final',
-        element: <ExerciseUI />
+        path: '/minimized',
+        element: <MinimizedDfa/>
+      },
+      {
+        path: 'final',
+        element: <ExerciseUI/>
       }
     ]
   },
