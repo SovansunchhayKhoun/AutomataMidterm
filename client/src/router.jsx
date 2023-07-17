@@ -1,7 +1,7 @@
 import React from "react"
 import {useNavigate, createBrowserRouter, useRouteError} from "react-router-dom"
 import {Layout} from './layout/Layout'
-import { LandingPage } from "./views/LandingPage"
+import { ConstructFa } from "./views/ConstructFa"
 import { MinimizedDfa } from "./views/MinimizedDfa"
 
 const router = createBrowserRouter([
@@ -11,7 +11,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: '',
-        element: <LandingPage/>
+        element: <ConstructFa/>
       },
       {
         path: '/minimized',

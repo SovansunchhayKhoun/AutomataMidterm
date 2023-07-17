@@ -5,13 +5,16 @@ import {RouterProvider} from "react-router-dom"
 import router from "./router.jsx"
 import './index.css'
 import { UtilProvider } from './context/UtilContext.jsx'
+import { MainProvider } from './context/MainContext.jsx'
 
 const client = new QueryClient();
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <QueryClientProvider client={client}>
       <UtilProvider>
-        <RouterProvider router={router} />
+        <MainProvider>
+          <RouterProvider router={router} />
+        </MainProvider>
       </UtilProvider>
     </QueryClientProvider>
   </React.StrictMode>,
