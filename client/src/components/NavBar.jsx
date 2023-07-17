@@ -7,8 +7,8 @@ export const NavBar = () => {
   const navigate = useNavigate();
 
   const navLinks = [
-    {title: "Construct DFA", to: "/"},
-    {title: "Construct NFA", to: "/"},
+    {title: "Construct FA", to: "/"},
+    {title: "Classify FA", to: "/"},
     {title: "Convert from NFA to DFA", to: "/"},
     {title: "Minimize DFA", to: "/minimized"},
   ]
