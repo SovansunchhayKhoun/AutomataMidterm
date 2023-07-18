@@ -5,12 +5,12 @@ export const AboveHead = () => {
   return (
     <div className="min-[1880px]:px-96
     lg:px-16
-    md:px-6 px-6">
-      <div className="flex justify-between m-5 px-5">
+    md:px-6 px-6 flex flex-col gap-6 py-6">
+      <div className="flex justify-between">
         <img src={CADT} alt="Logo" style={{ width: '512px', height: '50px' }}/>
         <img src={IDT} alt="Logo" style={{ width: '397px', height: '50px' }}/>
       </div>
-      <div className="flex m-10">
+      <div className="flex">
         <div className="outline-double w-[30%] p-2">
           <h1 className="font-bold">Team Members:</h1>
           <ul className="pl-10 font-semibold">

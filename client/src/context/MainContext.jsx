@@ -17,14 +17,14 @@ export const MainProvider = ({ children }) => {
 
   const generateStates = (event) => {
     clearFaState();   
-
+    
     // if 0 clear states
     if(Number(event.target.value) <= 0) {
       setFaStates([]);
       setFa({...fa, faStates});
     }
 
-    if (Number(event.target.value) > 0) {
+    if (Number(event.target.value) > 0 && Number(event.target.value) < 15) {
       for (let i = 0; i < Number(event.target.value); i++) {
         faStates.push({
           index: i,
@@ -37,17 +37,15 @@ export const MainProvider = ({ children }) => {
     }
   }
 
-  const clearAlphabets = () => {
-    setFaAlphabets(faAlphabets.splice(0, faAlphabets.length));
-  }
-
-  const generateAlphabets = (event) => {
+  const adjustEpsilon = (event) => {
     // remove epsilon
     if(!event.target.checked) {
       const index = faAlphabets.indexOf('$');
       faAlphabets.splice(index, 1);
+      fa.faAlphabets = 0;
+      setFaAlphabets(faAlphabets)
+      setFa({...fa, faAlphabets})
     }
-    
     // add epsilon
     if(event.target.checked) {
       faAlphabets.push({
@@ -56,9 +54,22 @@ export const MainProvider = ({ children }) => {
       })
       setFaAlphabets(faAlphabets)
       setFa({...fa, faAlphabets})
-    } 
-    
-    clearAlphabets();
+    }
+  }
+
+  const clearAlphabets = (event) => {
+    // remove epsilon
+    if(!event.target.checked) {
+      setFaAlphabets(faAlphabets.splice(0, faAlphabets.length));
+      adjustEpsilon(event) 
+    }
+  }
+
+  const generateAlphabets = (event) => {
+    clearAlphabets(event);
+ 
+    // removeEpsilon(event);
+    adjustEpsilon(event)
 
     // if 0 clear alphabets
     if(Number(event.target.value) <= 0) {
@@ -79,7 +90,7 @@ export const MainProvider = ({ children }) => {
   }
 
   const handleStartState = (event) => {
-    const { value, checked } = event.target;
+    const { value, checked } = event.target;   
     if (!checked) {
       // remove one start state
       const index = fa.faStartStates.indexOf(value);

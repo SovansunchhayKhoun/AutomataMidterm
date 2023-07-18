@@ -7,14 +7,17 @@ export const ConstructFa = () => {
     fa, submitForm, faStates, faAlphabets, handleStartState, handleFinalState, generateStates, generateAlphabets } = useContext(MainContext);
 
   return (
-    <main className='flex flex-col gap-4'>
-      <section>
+    <main className='flex gap-4'>
+
+      <section className="w-full">
         <div className='grid grid-cols-2 gap-4 w-1/2 items-center'>
           {/* get number of states */}
           <label htmlFor="state">State: </label>
           <div className='flex flex-col gap-1'>
             <input 
-              min={0} type="number" required
+              // value={faStates.length || 1 }
+              min={1} type="number" required
+              max={5}
               onChange={event => {
                 generateStates(event)
               }}
@@ -33,6 +36,7 @@ export const ConstructFa = () => {
               onChange={event => {
                 generateAlphabets(event)
               }}
+              value={fa.faAlphabets.length || 1}
               min="0"
               max="26"
               className="border-2 border-[#3B82F6] px-2 py-1 w-full" 

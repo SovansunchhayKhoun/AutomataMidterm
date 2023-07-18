@@ -6,35 +6,34 @@ export const Classify = () => {
   const {faStates, faAlphabets, faStartStates, faFinalStates} = fa;
   
   return (
-    <div> 
-      {faStates?.map((fs, key) => {
-        return (
-          <div key={key}>State: {fs.state}</div>
-        )
-      })}
+    <section className='flex-1'>
+        {faStates?.map((fs, key) => {
+          return (
+            <div key={key}>State: {fs.state}</div>
+          )
+        })}
 
-      {faAlphabets?.map((fa, key) => {
-        return (
-          <div key={key}>
-            Alphabet: {fa.alphabet}
-          </div>
-        )
-      })}
+        {faAlphabets?.map((fa, key) => {
+          return (
+            <div key={key}>
+              Alphabet: {alphabet}
+            </div>
+          )
+        })}
 
-      {faStartStates?.map((fss, key) => {
-        return (
-          <div key={key}>Start State: {fss}</div>
-        )
-      })}
+        {faStartStates?.map((fss, key) => {
+          return (
+            <div key={key}>Start State: {fss}</div>
+          )
+        })}
 
-      {faFinalStates?.map((ffs, key) => {
-        return (
-          <div key={key}>
-            Final State: {ffs}
-          </div>
-        )
-      })}
-
-    </div>
+        {faFinalStates?.map((ffs, key) => {
+          return (
+            <div key={key}>
+              Final State: {ffs}
+            </div>
+          )
+        })}
+      </section>
   )
 }
