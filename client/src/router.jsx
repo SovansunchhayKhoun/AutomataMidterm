@@ -1,9 +1,11 @@
 import React from "react"
 import {useNavigate, createBrowserRouter, useRouteError} from "react-router-dom"
 import {Layout} from './layout/Layout'
-import { ExerciseUI } from "./views/ExerciseUI"
 import { ConstructFa } from "./views/ConstructFa"
 import { MinimizedDfa } from "./views/MinimizedDfa"
+import { ErrorPage } from "./views/ErrorPage";
+import { Classify } from "./views/Classify"
+import { ValidateString } from "./views/ValidateString"
 
 const router = createBrowserRouter([
   {
@@ -19,9 +21,17 @@ const router = createBrowserRouter([
         element: <MinimizedDfa/>
       },
       {
-        path: 'final',
-        element: <ExerciseUI/>
-      }
+        path: '/classify',
+        element: <Classify />
+      },
+      {
+        path: '/validate',
+        element: <ValidateString />
+      },
+      {
+        path: '*',
+        element: <ErrorPage />
+      },
     ]
   },
 ])

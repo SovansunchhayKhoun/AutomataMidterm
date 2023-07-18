@@ -3,13 +3,15 @@ import IDT from "../assets/IDT3.png"
 
 export const AboveHead = () => {
   return (
-    <div>
+    <div className="min-[1880px]:px-96
+    lg:px-16
+    md:px-6 px-6">
       <div className="flex justify-between m-5 px-5">
         <img src={CADT} alt="Logo" style={{ width: '512px', height: '50px' }}/>
         <img src={IDT} alt="Logo" style={{ width: '397px', height: '50px' }}/>
       </div>
       <div className="flex m-10">
-        <div className="outline-double w-[25%]">
+        <div className="outline-double w-[30%] p-2">
           <h1 className="font-bold">Team Members:</h1>
           <ul className="pl-10 font-semibold">
             <li>Khoun Sovansunchhay</li>

@@ -51,7 +51,6 @@ export const ConstructFa = () => {
             
           </div>
 
-
           {/* get start state */}
           {faStates.length > 0 && (
             <>
@@ -79,7 +78,6 @@ export const ConstructFa = () => {
               </div>
             </>
           )}
-
 
           {/* get final state */}
           {faStates.length > 0 && (

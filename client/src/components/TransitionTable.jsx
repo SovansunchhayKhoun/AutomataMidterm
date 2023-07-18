@@ -29,7 +29,13 @@ export const TransitionTable = () => {
               {faAlphabets?.map((fa, key) => {
                 return (
                   <Table.Cell key={key} className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                    
+                    <select name="" id="">
+                      {faStates?.map((fs, key) => {
+                        return (
+                          <option value={fs.state} key={key}>{fs.state}</option>
+                        )
+                      })}
+                    </select>
                   </Table.Cell> 
                 )
               })}

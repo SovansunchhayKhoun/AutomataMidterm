@@ -42,12 +42,14 @@ export const MainProvider = ({ children }) => {
   }
 
   const generateAlphabets = (event) => {
+    // remove epsilon
     if(!event.target.checked) {
-      clearAlphabets();
+      const index = faAlphabets.indexOf('$');
+      faAlphabets.splice(index, 1);
     }
-
+    
+    // add epsilon
     if(event.target.checked) {
-      
       faAlphabets.push({
         index: faAlphabets.length,
         alphabet: '$',
@@ -55,10 +57,12 @@ export const MainProvider = ({ children }) => {
       setFaAlphabets(faAlphabets)
       setFa({...fa, faAlphabets})
     } 
+    
+    clearAlphabets();
 
     // if 0 clear alphabets
     if(Number(event.target.value) <= 0) {
-      setFaAlphabets([]);
+      setFaAlphabets([]); 
       setFa({...fa, faAlphabets});
     }
 
