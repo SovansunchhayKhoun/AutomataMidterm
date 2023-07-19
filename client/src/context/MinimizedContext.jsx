@@ -1,58 +1,70 @@
-import React, { createContext, useEffect, useState } from 'react'
+import React, { createContext, useEffect, useState } from "react";
 
 export const MinimizedContext = createContext();
 export const MinimizedProvider = ({ children }) => {
-  
-  const [states,setStates] = useState([])
-  const [alphabets,setAlphabets] = useState([])
+  const [states, setStates] = useState([]);
+  const [alphabets, setAlphabets] = useState([]);
+  const [transitionTable, setTransitionTable] = useState(Array.from({length: 1},()=> Array.from({length: 1}, () => 'q0')));
 
+  const handleTransistionTable = (row,column,value) => {
+    //temporary copy from transitionTable
+    let copy = [...transitionTable];
+    //change value
+    copy[row][column] = value;
+    //update transitionTable value
+    setTransitionTable(copy);
+    setDfa({...dfa,transitions:transitionTable})
+  }
   //dfa components
-  const [dfa,setDfa] = useState({
-    states: [],
-    alphabets: [],
+  const [dfa, setDfa] = useState({
+    states: states,
+    alphabets: alphabets,
     startState: [],
     finalStates: [],
-  })
+    amountState: states.length,
+    amountAlphabet: alphabets.length,
+    transitions: transitionTable
+  });
   const generateStates = (amountState = 1) => {
     //clear all states from the array
-    while(states.length>0){
-      states.pop()
-      setDfa({...dfa,states})
+    while (states.length > 0) {
+      states.pop();
+      setDfa({ ...dfa, states: states,amountState: states.length});
     }
 
     //insert all states to array
-    for(let i=0;i<amountState;i++){
-      setStates(states,states.push(`q${i}`))
-      setDfa({...dfa,states})
+    for (let i = 0; i < amountState; i++) {
+      setStates(states, states.push(`q${i}`));
+      setDfa({ ...dfa, states: states,amountState: states.length});
     }
-  }
+  };
 
   const generateAlphabets = (amountAlphabet = 1) => {
     //clear all alphabets from the array
-    while(alphabets.length>0){
-      alphabets.pop()
-      setDfa({...dfa,alphabets})
+    while (alphabets.length > 0) {
+      alphabets.pop();
+      setDfa({ ...dfa, alphabets: alphabets,amountAlphabet: alphabets.length});
     }
     //insert all alphabets to array
-    for(let i=0;i<amountAlphabet;i++){
-      setAlphabets(alphabets,alphabets.push(`${i}`))
-      setDfa({...dfa,alphabets})
+    for (let i = 0; i < amountAlphabet; i++) {
+      setAlphabets(alphabets, alphabets.push(`${i}`));
+      setDfa({ ...dfa, alphabets: alphabets,amountAlphabet: alphabets.length});
     }
-  }
+  };
 
   const handleStartState = (event) => {
-    const { value, checked } = event.target;   
+    const { value, checked } = event.target;
     if (!checked) {
       // remove one start state
       const index = dfa.startState.indexOf(value);
       dfa.startState.splice(index, 1);
     } else {
-      if(!dfa.startState.includes(value)) {
-        dfa.startState.push(value)
+      if (!dfa.startState.includes(value)) {
+        dfa.startState.push(value);
       }
     }
-    setDfa({...dfa})
-  }
+    setDfa({ ...dfa });
+  };
 
   const handleFinalState = (event) => {
     const { value, checked } = event.target;
@@ -61,27 +73,32 @@ export const MinimizedProvider = ({ children }) => {
       const index = dfa.finalStates.indexOf(value);
       dfa.finalStates.splice(index, 1);
     } else {
-      if(!dfa.finalStates.includes(value)) {
-        dfa.finalStates.push(value)
+      if (!dfa.finalStates.includes(value)) {
+        dfa.finalStates.push(value);
       }
     }
-    setDfa({...dfa})
-  }
+    setDfa({ ...dfa });
+  };
 
   return (
-    <MinimizedContext.Provider value={{
-      states,
-      setStates,
-      alphabets,
-      setAlphabets,
-      generateStates,
-      generateAlphabets,
-      setDfa,
-      dfa,
-      handleStartState,
-      handleFinalState,
-    }}>
+    <MinimizedContext.Provider
+      value={{
+        states,
+        setStates,
+        alphabets,
+        setAlphabets,
+        generateStates,
+        generateAlphabets,
+        setDfa,
+        dfa,
+        handleStartState,
+        handleFinalState,
+        transitionTable,
+        setTransitionTable,
+        handleTransistionTable
+      }}
+    >
       {children}
     </MinimizedContext.Provider>
-  )
-}
+  );
+};
