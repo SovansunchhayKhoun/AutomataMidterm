@@ -1,20 +1,22 @@
 import React, { useContext } from 'react'
-import { MainContext } from '../context/MainContext'
+import { MainContext } from '../../context/MainContext'
 import { Table } from 'flowbite-react';
 
 export const TransitionTable = () => {
-  const { faStates, faAlphabets } = useContext(MainContext);
+  const { fa, handleTransition } = useContext(MainContext);
+  const { faStates, faAlphabets } = fa
   return (
-    <div>
+    <>
+      <label htmlFor="">Transition Table</label>
       <Table>
         <Table.Head>
           <Table.HeadCell>
             
           </Table.HeadCell>
-          {faAlphabets?.map((fa, key) => {
+          {faStates?.map((fs, key) => {
             return (
               <Table.HeadCell key={key}>
-                {fa.alphabet}
+                {fs.state}
               </Table.HeadCell>              
             )
           })}
@@ -26,13 +28,13 @@ export const TransitionTable = () => {
               <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
                 {fs.state}
               </Table.Cell>
-              {faAlphabets?.map((fa, key) => {
+              {faStates?.map((fa, key) => {
                 return (
                   <Table.Cell key={key} className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                    <select name="" id="">
-                      {faStates?.map((fs, key) => {
+                    <select onChange={handleTransition} name="" id="">
+                      {faAlphabets?.map((fa, key) => {
                         return (
-                          <option value={fs.state} key={key}>{fs.state}</option>
+                          <option value={fa.state} key={key}>{fa.alphabet}</option>
                         )
                       })}
                     </select>
@@ -44,6 +46,6 @@ export const TransitionTable = () => {
           })}
         </Table.Body>
       </Table>
-    </div>
+    </>
   )
 }

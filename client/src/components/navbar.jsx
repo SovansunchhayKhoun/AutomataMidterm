@@ -8,7 +8,8 @@ export const NavBar = () => {
 
   const navLinks = [
     {title: "Construct FA", to: "/"},
-    {title: "Classify FA", to: "/"},
+    {title: "Classify FA", to: "/classify"},
+    {title: "Validate String", to: "/validate"},
     {title: "Convert from NFA to DFA", to: "/"},
     {title: "Minimize DFA", to: "/minimized"},
   ]

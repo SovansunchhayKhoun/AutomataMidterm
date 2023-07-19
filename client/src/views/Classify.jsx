@@ -2,38 +2,46 @@ import React, { useContext } from 'react'
 import { MainContext } from '../context/MainContext'
 
 export const Classify = () => {
-  const {fa} = useContext(MainContext);
-  const {faStates, faAlphabets, faStartStates, faFinalStates} = fa;
-  
+  const { fa } = useContext(MainContext);
+  const { faStates, faAlphabets, faStartStates, faFinalStates } = fa;
+
   return (
-    <section className='flex-1'>
+    <section className='flex flex-col'>
+      <div>
+        State:
         {faStates?.map((fs, key) => {
           return (
-            <div key={key}>State: {fs.state}</div>
+            <div key={key}>{fs.state}</div>
           )
         })}
-
+      </div>
+      <div>
+        Alphabet:
         {faAlphabets?.map((fa, key) => {
           return (
             <div key={key}>
-              Alphabet: {alphabet}
+              {fa.alphabet}
             </div>
           )
         })}
+      </div>
 
-        {faStartStates?.map((fss, key) => {
+      <div>
+        Start State: {faStartStates}
+        {/* {faStartStates?.map((fss, key) => {
           return (
-            <div key={key}>Start State: {fss}</div>
+            <div key={key}>{fss}</div>
           )
-        })}
-
+        })} */}
+      </div>
+      <div>
+        Final state
         {faFinalStates?.map((ffs, key) => {
           return (
-            <div key={key}>
-              Final State: {ffs}
-            </div>
+            <div key={key}>{ffs}</div>
           )
         })}
-      </section>
+      </div>
+    </section>
   )
 }
