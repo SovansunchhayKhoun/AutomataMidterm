@@ -18,18 +18,14 @@ export const MainProvider = ({ children }) => {
 
   // set of transitions
   const [transitionSets, setTransitionSets] = useState(
-    Array.from({ length: rows }, () => Array.from({ length: cols }, () => {
+    Array.from({ length: rows }, (_, rowIndex) => Array.from({ length: cols }, (_, colIndex) => {
       return {
-        transitState: 'q0',
-        transitAlphabet: 'A',
+        transitState: `q${rowIndex}`,
+        transitAlphabet: String.fromCharCode(colIndex + 65),
         transitResult: 'q0'
       }
     }))
   );
-
-  const updateTransTable = () => {
-
-  }
 
   // fa definitions
   const [fa, setFa] = useState({
@@ -48,9 +44,27 @@ export const MainProvider = ({ children }) => {
     });
   }
 
+  const clearTransition = () => {
+    setTransitionSets(Array.from({ length: rows }, (_, rowIndex) => Array.from({ length: cols }, (_, colIndex) => {
+      return {
+        transitState: `q0`,
+        transitAlphabet: String.fromCharCode(colIndex + 65),
+        transitResult: 'q0'
+      }
+    })))
+    setFa({...fa, transitionSets: Array.from({ length: rows }, (_, rowIndex) => Array.from({ length: cols }, (_, colIndex) => {
+      return {
+        transitState: `q0`,
+        transitAlphabet: String.fromCharCode(colIndex + 65),
+        transitResult: 'q0'
+      }
+    }))})
+  }
+
   const [trapCheck, setTrapCheck] = useState(false);
 
   const adjustTrap = (nfa) => {
+    clearTransition();
     if(nfa && faStates.some((fa) => fa.state === 'Trap')) {
       setError({...error, nfaError: 'Cannot Set Trap if FA is Non-Deterministic'})
       faStates.splice(faStates.indexOf('Trap'), 1);
@@ -80,6 +94,7 @@ export const MainProvider = ({ children }) => {
   const generateStates = (event) => {
     setError({ ...error, stateError: '' });
     clearFaState();
+    clearTransition();
 
     setFaStates(faStates);
     setFa({ ...fa, faStates });
@@ -91,33 +106,33 @@ export const MainProvider = ({ children }) => {
 
     if (Number(event.target.value) > 0 && Number(event.target.value) <= 5) {
       setRows(Number(event.target.value));
-      // setTransitionSets(
-      //   Array.from({ length: Number(event.target.value) }, () => Array.from({ length: cols }, () => {
-      //     return {
-      //       transitState: `q0`,
-      //       transitAlphabet: String.fromCharCode(cols + 65),
-      //       transitResult: `q0`
-      //     }
-      //   })))
-      // updateTransTable(faStates, faAlphabets, 'q0');
+      setTransitionSets(
+          Array.from({ length: Number(event.target.value) }, (_, rowIndex) => Array.from({ length: cols }, (_, colIndex) => {
+            console.log(`Row index: ${rowIndex}, Col Index: ${colIndex}`)
+            return {
+              transitState: `q${rowIndex}`,
+              transitAlphabet: String.fromCharCode(colIndex+65),
+              transitResult: `q0`
+            }
+          }))
+        )
+      
       for (let i = 0; i < Number(event.target.value); i++) {
         faStates.push({
           index: i,
           state: `q${i}`
         })
 
-        setTransitionSets(
-          Array.from({ length: Number(event.target.value) }, () => Array.from({ length: cols }, () => {
+        setFaStates(faStates)
+        setFa({ ...fa, faStates, faStartState: `q0`, 
+          transitionSets: Array.from({ length: Number(event.target.value) }, (_, rowIndex) => Array.from({ length: cols }, (_, colIndex) => {
+            console.log(`Row index: ${rowIndex}, Col Index: ${colIndex}`)
             return {
-              transitState: `q${i}`,
-              // transitAlphabet: String.fromCharCode(i+65),
+              transitState: `q${rowIndex}`,
+              transitAlphabet: String.fromCharCode(colIndex+65),
               transitResult: `q0`
             }
-          }))
-        )
-
-        setFaStates(faStates)
-        setFa({ ...fa, faStates, faStartState: `q0` })
+          }))})
       }
     } else if (Number(event.target.value) >= 6) {
       setError({ ...error, stateError: 'Cannot exceed 5 states' })
@@ -131,6 +146,7 @@ export const MainProvider = ({ children }) => {
   const adjustEpsilon = () => {
     // remove epsilon
     setError({...error, nfaError: ''})
+    clearTransition();
     if (epsilonCheck) {
       const index = faAlphabets.indexOf('$');
       faAlphabets.splice(index, 1);
@@ -161,7 +177,7 @@ export const MainProvider = ({ children }) => {
   const generateAlphabets = (event) => {
     setError({ ...error, alphabetError: '' });
     clearAlphabets();
-
+    clearTransition();
     // if 0 clear alphabets
     if (Number(event.target.value) <= 0) {
       setFaAlphabets([]);
@@ -170,22 +186,30 @@ export const MainProvider = ({ children }) => {
 
     if (Number(event.target.value) > 0 && Number(event.target.value) <= 5) {
       setCols(Number(event.target.value));
+      setTransitionSets(
+          Array.from({ length: rows }, (_, rowIndex) => Array.from({ length: Number(event.target.value) }, (_, colIndex) => {
+            return {
+              transitState: `q${rowIndex}`,
+              transitAlphabet: String.fromCharCode(colIndex+65),
+              transitResult: `q0`
+            }
+          }))
+        )
+      // setFa({...fa, transitionSets});
       for (let i = 0; i < event.target.value; i++) {
         faAlphabets.push({
           index: i,
           alphabet: String.fromCharCode(i + 65), // convert num to char
         })
         setFaAlphabets(faAlphabets)
-        setFa({ ...fa, faAlphabets });
-        setTransitionSets(
-          Array.from({ length: rows }, () => Array.from({ length: Number(event.target.value) }, () => {
+        setFa({ ...fa, faAlphabets, 
+          transitionSets: Array.from({ length: rows }, (_, rowIndex) => Array.from({ length: Number(event.target.value) }, (_, colIndex) => {
             return {
-              // transitState: `q${i}`,
-              transitAlphabet: String.fromCharCode(i+65),
+              transitState: `q${rowIndex}`,
+              transitAlphabet: String.fromCharCode(colIndex+65),
               transitResult: `q0`
             }
-          }))
-        )
+          }))});
       }
     } else if (Number(event.target.value) >= 6) {
       setError({ ...error, alphabetError: 'Cannot exceed 5 alphabets' })
@@ -213,6 +237,7 @@ export const MainProvider = ({ children }) => {
   }
 
   const handleTransition = (event, state, alphabet) => {
+
     const { value } = event.target;
 
     console.log(state)
@@ -233,15 +258,8 @@ export const MainProvider = ({ children }) => {
     };
     value === '$' && setNfa(true);
 
-    console.log(transitionSets);
-
     setFa({...fa, transitionSets})
 
-    // let copy = [...transitionSets];
-    // copy[row][col] = value;
-
-    // setTransitionSets(copy);
-    // setFa({...fa, transitionSets})
   }
 
   const submitForm = () => {

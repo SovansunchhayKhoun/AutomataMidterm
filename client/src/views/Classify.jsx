@@ -3,8 +3,8 @@ import { MainContext } from '../context/MainContext'
 
 export const Classify = () => {
   const { fa, nfa } = useContext(MainContext);
-  const { faStates, faAlphabets, faStartState, faFinalStates } = fa;
-
+  const { faStates, faAlphabets, faStartState, faFinalStates, transitionSets } = fa;
+  
   return (
     <section className='flex flex-col gap-2'>
       <div className='flex'>
@@ -45,6 +45,21 @@ export const Classify = () => {
           })}
         </p>
       </div>
+
+      {/* <div>
+        {transitionSets?.map(set => {
+          return (
+            set.map((s, key) => {
+              return (
+                <div key={key}>
+                  {s.transitState} transit by {s.transitAlphabet} = {s.transitResult}
+                </div>
+              )
+            })
+          )
+        })}
+      </div> */}
+
       <div className='bg-cyan-300 px-12 py-2 text-white rounded-sm'>
         <span>{`This is ${nfa ? 'an' : 'not an'} nfa`}</span>
       </div>

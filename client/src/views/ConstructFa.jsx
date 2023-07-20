@@ -7,8 +7,8 @@ import { StartState } from '../components/FAComponents/StartState';
 import { FinalStates } from '../components/FAComponents/FinalStates';
 
 export const ConstructFa = () => {
-  const { submitForm } = useContext(MainContext);
-  
+  const { submitForm, fa } = useContext(MainContext);
+  const {transitionSets} = fa;
   return (
     <main className='flex gap-4'>
 
@@ -29,6 +29,23 @@ export const ConstructFa = () => {
           {/* {fa.faAlphabets.include(fa => fa.alphabet === '$') ? '' : ''} */}
           {/* generate transition table */}
           <TransitionTable />
+
+          <div>
+        {transitionSets?.map(set => {
+          return (
+            set.map((s, key) => {
+              return (
+                <div key={key}>
+                  {s.transitState}&nbsp;
+                  transition&nbsp;
+                  {s.transitAlphabet}&nbsp;
+                   = {s.transitResult}
+                </div>
+              )
+            })
+          )
+        })}
+      </div>
         </div>
 
         <button onClick={() => {submitForm()}}>
