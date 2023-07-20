@@ -14,7 +14,7 @@ export const FinalStates = () => {
               </div>
               <div>
                 <div className='grid grid-cols-5 gap-1'>
-                  {faStates?.map((fs, key) => {
+                  {faStates?.filter(fs => fs.state !== 'Trap').map((fs, key) => {
                     return (
                       <div key={key} className='flex gap-1 items-center'>
                         <input type="checkbox" onChange={(event) => {
@@ -26,7 +26,8 @@ export const FinalStates = () => {
                   })}
                 </div>
                 <div>
-                  Your Final State: {faFinalStates?.map((fss, key) => (
+                  {faFinalStates?.length > 0 && 'Your Final State: '}
+                  {faFinalStates?.map((fss, key) => (
                     <span key={key}>{fss}{faFinalStates.length - 1 !== key && ', '}</span>
                   ))}
                 </div>

@@ -13,28 +13,34 @@ export const TransitionTable = () => {
           <Table.HeadCell>
             
           </Table.HeadCell>
-          {faStates?.map((fs, key) => {
+          {faAlphabets?.map((fa, key) => {
             return (
               <Table.HeadCell key={key}>
-                {fs.state}
+                {fa.alphabet}
               </Table.HeadCell>              
             )
           })}
         </Table.Head>
         <Table.Body className="divide-y">
-          {faStates?.map((fs, key) => {
+          {faStates?.filter(fs => fs.state !== 'Trap (Optional)').map((fs, stateKey) => {
           return (
-            <Table.Row key={key} className="bg-white dark:border-gray-700 dark:bg-gray-800">
+            <Table.Row key={stateKey} className="bg-white dark:border-gray-700 dark:bg-gray-800">
               <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
                 {fs.state}
               </Table.Cell>
-              {faStates?.map((fa, key) => {
+              {faAlphabets?.map((fa, alphabetKey) => {
                 return (
-                  <Table.Cell key={key} className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                    <select onChange={handleTransition} name="" id="">
-                      {faAlphabets?.map((fa, key) => {
+                  <Table.Cell key={alphabetKey} className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
+                    <select onChange={(event) => {
+                          handleTransition(event, 
+                            {row: stateKey, transitState: fs.state}, 
+                            {col:alphabetKey, transitAlphabet: fa.alphabet}
+                          )
+                        }
+                      } name="" id="">
+                      {faStates?.map((fs, key) => {
                         return (
-                          <option value={fa.state} key={key}>{fa.alphabet}</option>
+                          <option value={fs.state} key={key}>{fs.state}</option>
                         )
                       })}
                     </select>

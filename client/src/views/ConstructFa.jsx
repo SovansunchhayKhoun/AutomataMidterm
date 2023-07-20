@@ -8,7 +8,7 @@ import { FinalStates } from '../components/FAComponents/FinalStates';
 
 export const ConstructFa = () => {
   const { submitForm } = useContext(MainContext);
-
+  
   return (
     <main className='flex gap-4'>
 
@@ -25,8 +25,8 @@ export const ConstructFa = () => {
           
           {/* get number of alphabets */}
           <NumAlphabets />
-
           
+          {/* {fa.faAlphabets.include(fa => fa.alphabet === '$') ? '' : ''} */}
           {/* generate transition table */}
           <TransitionTable />
         </div>

@@ -14,10 +14,10 @@ export const StartState = () => {
           </div>
           <div>
             <select onChange={handleStartState}>
-              {faStates?.map((fs, key) => {
+              {faStates?.filter(fs => fs.state !== 'Trap').map((fs, key) => {
                 return (
                   <option value={fs.state} key={key}>{fs.state}</option>
-                )
+                ) 
               })}
             </select>
             <div>

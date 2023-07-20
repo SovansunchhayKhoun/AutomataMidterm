@@ -2,7 +2,7 @@ import React, { useContext } from 'react'
 import { MainContext } from '../../context/MainContext'
 
 export const NumAlphabets = () => {
-  const { fa, generateAlphabets, error, adjustEpsilon } = useContext(MainContext);
+  const { fa, generateAlphabets, error, adjustEpsilon, epsilonCheck } = useContext(MainContext);
   const { faAlphabets } = fa;
 
   return (
@@ -21,12 +21,12 @@ export const NumAlphabets = () => {
           type="number" id="alphabet" placeholder='Number of Alphabets' />
         <div>
           Your Alphabets: [ {faAlphabets?.map((fa, key) => {
-            return <span key={key}> {fa.alphabet}{faAlphabets.length - 1 !== fa.index && ', '}</span>
+            return <span key={key}> {fa.alphabet}{faAlphabets.length - 1 !== key && ', '}</span>
           })} ]
         </div>
         {faAlphabets.length > 0 && (
           <div className='flex gap-1 items-center'>
-            <input onChange={(event) => adjustEpsilon(event)} className='border-2 border-blue-500' type="checkbox" />
+            <input checked={epsilonCheck} onChange={(event) => adjustEpsilon(event)} className='border-2 border-blue-500' type="checkbox" />
             <label htmlFor="">Include Epsilon?</label>
           </div>
         )}
