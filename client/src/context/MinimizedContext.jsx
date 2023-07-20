@@ -7,7 +7,10 @@ export const MinimizedProvider = ({ children }) => {
   const [transitionTable, setTransitionTable] = useState(
     Array.from({ length: 1 }, () => Array.from({ length: 1 }, () => "q0"))
   );
-
+  const [transitions,setTransitions]= useState([{
+    states: 'q0',
+    transitions: []
+  }])
   const initializeTransitionTable = (row, column, value = "q0") => {
     setTransitionTable(
       Array.from({ length: row }, () =>
@@ -121,6 +124,8 @@ export const MinimizedProvider = ({ children }) => {
         setTransitionTable,
         handleTransistionTable,
         initializeTransitionTable,
+        transitions,
+        setTransitions,
       }}
     >
       {children}

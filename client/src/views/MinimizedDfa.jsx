@@ -13,6 +13,9 @@ export const MinimizedDfa = () => {
     handleStartState,
     handleFinalState,
     initializeTransitionTable,
+    transitionTable,
+    transitions,
+    setTransitions
   } = useContext(MinimizedContext);
   useEffect(() => {
     generateAlphabets();
@@ -159,11 +162,22 @@ export const MinimizedDfa = () => {
 
         <button
           onClick={() => {
-            console.log(dfa);
+            for(let i = 0;i<states.length;i++){
+              console.log(states[i], transitionTable[i])
+              // setTransitions([...transitions,{states: states[i], transitions:transitionTable[i]}])
+              // console.log(transitions)
+            }
           }}
         >
           Submit
         </button>
+        {/* <button
+          onClick={() => {
+            console.log(transitions)
+          }}
+        >
+          test
+        </button> */}
       </section>
     </main>
   );
