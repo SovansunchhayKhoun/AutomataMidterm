@@ -27,6 +27,10 @@ export const MainProvider = ({ children }) => {
     }))
   );
 
+  const updateTransTable = () => {
+
+  }
+
   // fa definitions
   const [fa, setFa] = useState({
     faStates: [],
@@ -87,24 +91,33 @@ export const MainProvider = ({ children }) => {
 
     if (Number(event.target.value) > 0 && Number(event.target.value) <= 5) {
       setRows(Number(event.target.value));
-      setTransitionSets(
-        Array.from({ length: Number(event.target.value) }, () => Array.from({ length: cols }, () => {
-          return {
-            transitState: `q0`,
-            transitAlphabet: String.fromCharCode(cols + 65),
-            transitResult: `q0`
-          }
-        })))
-
+      // setTransitionSets(
+      //   Array.from({ length: Number(event.target.value) }, () => Array.from({ length: cols }, () => {
+      //     return {
+      //       transitState: `q0`,
+      //       transitAlphabet: String.fromCharCode(cols + 65),
+      //       transitResult: `q0`
+      //     }
+      //   })))
+      // updateTransTable(faStates, faAlphabets, 'q0');
       for (let i = 0; i < Number(event.target.value); i++) {
         faStates.push({
           index: i,
           state: `q${i}`
         })
 
+        setTransitionSets(
+          Array.from({ length: Number(event.target.value) }, () => Array.from({ length: cols }, () => {
+            return {
+              transitState: `q${i}`,
+              // transitAlphabet: String.fromCharCode(i+65),
+              transitResult: `q0`
+            }
+          }))
+        )
+
         setFaStates(faStates)
         setFa({ ...fa, faStates, faStartState: `q0` })
-
       }
     } else if (Number(event.target.value) >= 6) {
       setError({ ...error, stateError: 'Cannot exceed 5 states' })
@@ -157,15 +170,6 @@ export const MainProvider = ({ children }) => {
 
     if (Number(event.target.value) > 0 && Number(event.target.value) <= 5) {
       setCols(Number(event.target.value));
-      setTransitionSets(
-        Array.from({ length: rows }, () => Array.from({ length: Number(event.target.value) }, () => {
-          return {
-            transitState: `q0`,
-            transitAlphabet: String.fromCharCode(cols+65),
-            transitResult: `q0`
-          }
-        }))
-      )
       for (let i = 0; i < event.target.value; i++) {
         faAlphabets.push({
           index: i,
@@ -173,8 +177,15 @@ export const MainProvider = ({ children }) => {
         })
         setFaAlphabets(faAlphabets)
         setFa({ ...fa, faAlphabets });
-
-
+        setTransitionSets(
+          Array.from({ length: rows }, () => Array.from({ length: Number(event.target.value) }, () => {
+            return {
+              // transitState: `q${i}`,
+              transitAlphabet: String.fromCharCode(i+65),
+              transitResult: `q0`
+            }
+          }))
+        )
       }
     } else if (Number(event.target.value) >= 6) {
       setError({ ...error, alphabetError: 'Cannot exceed 5 alphabets' })
