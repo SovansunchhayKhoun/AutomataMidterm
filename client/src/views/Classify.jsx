@@ -61,7 +61,7 @@ export const Classify = () => {
       </div> */}
 
       <div className='bg-cyan-300 px-12 py-2 text-white rounded-sm'>
-        <span>{`This is ${nfa ? 'an' : 'not an'} nfa`}</span>
+        <span>{`This is ${nfa ? 'an NFA' : 'a DFA'}`}</span>
       </div>
     </section>
   )

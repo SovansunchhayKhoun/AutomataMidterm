@@ -13,41 +13,40 @@ export const ConstructFa = () => {
     <main className='flex gap-4'>
 
       <section className="w-full">
-        <div className='grid grid-cols-2 gap-4 w-1/2 items-center'> 
-          {/* get number of states */}
-          <NumStates />
+        <div className='flex gap-3'>
+          <div className='grid grid-cols-2 gap-4 w-1/2 items-center'> 
+            {/* get number of states */}
+            <NumStates />
 
-          {/* get start state */}
-          <StartState />
+            {/* get start state */}
+            <StartState />
 
-          {/* get final state */}
-          <FinalStates />
-          
-          {/* get number of alphabets */}
-          <NumAlphabets />
-          
-          {/* {fa.faAlphabets.include(fa => fa.alphabet === '$') ? '' : ''} */}
-          {/* generate transition table */}
-          <TransitionTable />
-
+            {/* get final state */}
+            <FinalStates />
+            
+            {/* get number of alphabets */}
+            <NumAlphabets />
+            
+            {/* generate transition table */}
+            <TransitionTable />
+          </div>
           <div>
-        {transitionSets?.map(set => {
-          return (
-            set.map((s, key) => {
+            {transitionSets?.map(set => {
               return (
-                <div key={key}>
-                  {s.transitState}&nbsp;
-                  transition&nbsp;
-                  {s.transitAlphabet}&nbsp;
-                   = {s.transitResult}
-                </div>
+                set.map((s, key) => {
+                  return (
+                    <div key={key}>
+                      {s.transitState}&nbsp;transition&nbsp;
+                      {s.transitAlphabet}&nbsp;
+                      =&nbsp;{s.transitResult}
+                    </div>
+                  )
+                })
               )
-            })
-          )
-        })}
-      </div>
+            })}
+          </div>
         </div>
-
+        
         <button onClick={() => {submitForm()}}>
           Submit
         </button>

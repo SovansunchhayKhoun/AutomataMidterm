@@ -33,7 +33,7 @@ export const MainProvider = ({ children }) => {
     faAlphabets: [],
     faStartState: '',
     faFinalStates: [],
-    transitionSets: transitionSets,
+    transitionSets,
   });
 
   const clearFaState = () => {
@@ -45,50 +45,52 @@ export const MainProvider = ({ children }) => {
   }
 
   const clearTransition = () => {
-    setTransitionSets(Array.from({ length: rows }, (_, rowIndex) => Array.from({ length: cols }, (_, colIndex) => {
-      return {
-        transitState: `q0`,
-        transitAlphabet: String.fromCharCode(colIndex + 65),
-        transitResult: 'q0'
-      }
-    })))
-    setFa({...fa, transitionSets: Array.from({ length: rows }, (_, rowIndex) => Array.from({ length: cols }, (_, colIndex) => {
-      return {
-        transitState: `q0`,
-        transitAlphabet: String.fromCharCode(colIndex + 65),
-        transitResult: 'q0'
-      }
-    }))})
+    console.log('called')
+    fa.transitionSets = Array.from({ length: rows }, (_, rowIndex) => Array.from({ length: cols }, (_, colIndex) => {
+        return {
+          transitState: `q${rowIndex}`,
+          transitAlphabet: String.fromCharCode(colIndex + 65),
+          transitResult: 'q0'
+        }
+      }))
+
+    setFa({ ...fa })
+
+    setTransitionSets(transitionSets);
   }
 
   const [trapCheck, setTrapCheck] = useState(false);
 
   const adjustTrap = (nfa) => {
-    clearTransition();
-    if(nfa && faStates.some((fa) => fa.state === 'Trap')) {
-      setError({...error, nfaError: 'Cannot Set Trap if FA is Non-Deterministic'})
+    if (nfa && faStates.some((fa) => fa.state === 'Trap')) {
+      
+      setError({ ...error, nfaError: 'Cannot Set Trap if FA is Non-Deterministic' })
       faStates.splice(faStates.indexOf('Trap'), 1);
       setFaStates([...faStates]);
-      setFa({...fa, faStates});
+      setFa({ ...fa, faStates });
       setTrapCheck(false);
     }
-
-    if(!nfa) {
-      if(!trapCheck) {
+    
+    if (!nfa) {
+      // add trap
+      if (!trapCheck) {
         faStates.push({
-          index: -1,
+          index: 6,
           state: `Trap`
         })
         setFaStates(faStates);
-        setFa({...fa, faStates});
+        setFa({ ...fa, faStates });
+        // clearTransition();
         setTrapCheck(true);
       } else {
+        // remove trap
         faStates.splice(faStates.indexOf('Trap'), 1);
         setFaStates([...faStates]);
-        setFa({...fa, faStates});
+        setFa({ ...fa, faStates });
+        clearTransition();
         setTrapCheck(false);
       }
-    } 
+    }
   }
 
   const generateStates = (event) => {
@@ -106,17 +108,17 @@ export const MainProvider = ({ children }) => {
 
     if (Number(event.target.value) > 0 && Number(event.target.value) <= 5) {
       setRows(Number(event.target.value));
+      // set rows and columns
       setTransitionSets(
-          Array.from({ length: Number(event.target.value) }, (_, rowIndex) => Array.from({ length: cols }, (_, colIndex) => {
-            console.log(`Row index: ${rowIndex}, Col Index: ${colIndex}`)
-            return {
-              transitState: `q${rowIndex}`,
-              transitAlphabet: String.fromCharCode(colIndex+65),
-              transitResult: `q0`
-            }
-          }))
-        )
-      
+        Array.from({ length: Number(event.target.value) }, (_, rowIndex) => Array.from({ length: cols }, (_, colIndex) => {
+          return {
+            transitState: `q${rowIndex}`,
+            transitAlphabet: String.fromCharCode(colIndex + 65),
+            transitResult: `q0`
+          }
+        }))
+      )
+
       for (let i = 0; i < Number(event.target.value); i++) {
         faStates.push({
           index: i,
@@ -124,15 +126,18 @@ export const MainProvider = ({ children }) => {
         })
 
         setFaStates(faStates)
-        setFa({ ...fa, faStates, faStartState: `q0`, 
+
+        // update state
+        setFa({
+          ...fa, faStates, faStartState: `q0`,
           transitionSets: Array.from({ length: Number(event.target.value) }, (_, rowIndex) => Array.from({ length: cols }, (_, colIndex) => {
-            console.log(`Row index: ${rowIndex}, Col Index: ${colIndex}`)
             return {
               transitState: `q${rowIndex}`,
-              transitAlphabet: String.fromCharCode(colIndex+65),
+              transitAlphabet: String.fromCharCode(colIndex + 65),
               transitResult: `q0`
             }
-          }))})
+          }))
+        })
       }
     } else if (Number(event.target.value) >= 6) {
       setError({ ...error, stateError: 'Cannot exceed 5 states' })
@@ -145,8 +150,7 @@ export const MainProvider = ({ children }) => {
 
   const adjustEpsilon = () => {
     // remove epsilon
-    setError({...error, nfaError: ''})
-    clearTransition();
+    setError({ ...error, nfaError: '' })
     if (epsilonCheck) {
       const index = faAlphabets.indexOf('$');
       faAlphabets.splice(index, 1);
@@ -154,6 +158,7 @@ export const MainProvider = ({ children }) => {
       setFaAlphabets([...faAlphabets])
       setFa({ ...fa, faAlphabets })
       setNfa(false);
+      clearTransition();
     }
     // add epsilon
     if (!epsilonCheck) {
@@ -162,10 +167,29 @@ export const MainProvider = ({ children }) => {
         index: faAlphabets.length,
         alphabet: '$',
       })
+      setTransitionSets(
+        Array.from({ length: rows }, (_, rowIndex) => Array.from({ length: faAlphabets.length }, (_, colIndex) => {
+          return {
+            transitState: `q${rowIndex}`,
+            transitAlphabet: colIndex !== faAlphabets.length-1 ? String.fromCharCode(colIndex + 65) : '$',
+            transitResult: `q0`
+          }
+        }))
+        )
+        
       setNfa(true);
       setFaAlphabets(faAlphabets)
       adjustTrap(true);
-      setFa({ ...fa, faAlphabets })
+      setFa({
+        ...fa, faAlphabets, 
+        transitionSets: Array.from({ length: rows }, (_, rowIndex) => Array.from({ length: faAlphabets.length }, (_, colIndex) => {
+          return {
+            transitState: `q${rowIndex}`,
+            transitAlphabet: colIndex !== faAlphabets.length-1 ? String.fromCharCode(colIndex + 65) : '$',
+            transitResult: `q0`
+          }
+        }))
+      })
     }
   }
 
@@ -187,14 +211,14 @@ export const MainProvider = ({ children }) => {
     if (Number(event.target.value) > 0 && Number(event.target.value) <= 5) {
       setCols(Number(event.target.value));
       setTransitionSets(
-          Array.from({ length: rows }, (_, rowIndex) => Array.from({ length: Number(event.target.value) }, (_, colIndex) => {
-            return {
-              transitState: `q${rowIndex}`,
-              transitAlphabet: String.fromCharCode(colIndex+65),
-              transitResult: `q0`
-            }
-          }))
-        )
+        Array.from({ length: rows }, (_, rowIndex) => Array.from({ length: Number(event.target.value) }, (_, colIndex) => {
+          return {
+            transitState: `q${rowIndex}`,
+            transitAlphabet: String.fromCharCode(colIndex + 65),
+            transitResult: `q0`
+          }
+        }))
+      )
       // setFa({...fa, transitionSets});
       for (let i = 0; i < event.target.value; i++) {
         faAlphabets.push({
@@ -202,14 +226,16 @@ export const MainProvider = ({ children }) => {
           alphabet: String.fromCharCode(i + 65), // convert num to char
         })
         setFaAlphabets(faAlphabets)
-        setFa({ ...fa, faAlphabets, 
+        setFa({
+          ...fa, faAlphabets,
           transitionSets: Array.from({ length: rows }, (_, rowIndex) => Array.from({ length: Number(event.target.value) }, (_, colIndex) => {
             return {
               transitState: `q${rowIndex}`,
-              transitAlphabet: String.fromCharCode(colIndex+65),
+              transitAlphabet: String.fromCharCode(colIndex + 65),
               transitResult: `q0`
             }
-          }))});
+          }))
+        });
       }
     } else if (Number(event.target.value) >= 6) {
       setError({ ...error, alphabetError: 'Cannot exceed 5 alphabets' })
@@ -239,36 +265,45 @@ export const MainProvider = ({ children }) => {
   const handleTransition = (event, state, alphabet) => {
 
     const { value } = event.target;
+    const { row, transitState } = state;
+    const { col, transitAlphabet } = alphabet;
 
-    console.log(state)
-    console.log(alphabet)
-
-    const {row, transitState} = state;
-    const {col, transitAlphabet} = alphabet;
-    console.log(transitState);
-    console.log(transitAlphabet);
-
+    console.log(`Row: ${row}, Col: ${col}, value: ${value}`);
     
-    console.log('Total rows: ' + rows)
-    console.log('Total cols: ' + cols)
-    // console.log(`Row: ${row}, Col: ${col}, value: ${value}`);
+    transitionSets[row][col] = {...transitionSets, transitState,      transitAlphabet, transitResult: value};
 
-    transitionSets[row][col] = {
-      transitState, transitAlphabet, transitResult: value
-    };
     value === '$' && setNfa(true);
 
-    setFa({...fa, transitionSets})
+    setFa({ ...fa, transitionSets});
 
+  }
+
+  const [inputString, setInputString] = useState('');
+
+  const handleString = (event) => {
+    const {value} = event.target;
+    setInputString(value);
+
+    console.log(faAlphabets);
+    console.log(value)
+  }
+
+  const validateString = () => {
+    // const {transitionSet} = fa;
+    console.log(fa.transitionSets); 
+    console.log(inputString);
   }
 
   const submitForm = () => {
     console.log(fa);
-    // console.log(transitionSets);
   }
 
   return (
     <MainContext.Provider value={{
+      inputString,
+      setInputString,
+      handleString,
+      validateString,
       epsilonCheck,
       setEpsilonCheck,
       trapCheck,

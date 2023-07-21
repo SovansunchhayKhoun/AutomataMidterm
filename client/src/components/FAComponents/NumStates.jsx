@@ -22,11 +22,13 @@ export const NumStates = () => {
           return <span key={key}>{fs.state}{faStates.length - 1 !== key && ', '}</span>
         })} ]
       </div>
-      <div className='flex items-center gap-1'>
+      {faStates?.length > 0 && (
+        <div className='flex items-center gap-1'>
         <input checked={trapCheck} type="checkbox" onChange={(event) => {
         !nfa && adjustTrap(nfa, event)}}/>
         Include trap?
       </div>
+      )}
       <span className='text-red-500 text-xs'>{error && error.nfaError}</span>
       <span className='text-red-500 text-xs'>{error && error.stateError}</span>
     </div>
