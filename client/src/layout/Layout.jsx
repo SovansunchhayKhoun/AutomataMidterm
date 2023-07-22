@@ -9,7 +9,6 @@ export const Layout = () => {
   
   return (
     <div className="min-h-screen flex flex-col overflow-auto">
-      <AboveHead/>
       <NavBar />
       <Header />
         <main className="
@@ -17,7 +16,8 @@ export const Layout = () => {
           lg:px-16
           md:px-6 md:pb-2 px-6 pt-12">
           <Outlet />
-        </main>           
+        </main>
+      {/*<AboveHead/>*/}
   </div>
   );
 };

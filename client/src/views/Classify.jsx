@@ -12,7 +12,7 @@ export const Classify = () => {
         <p>
           {faStates?.map((fs, key) => {
             return (
-              <span key={key}>{fs.state} {faStates.length - 1 !== key && ', '}</span>
+              <span key={key}>{fs} {faStates.length - 1 !== key && ', '}</span>
             )
           })}
         </p>
@@ -23,7 +23,7 @@ export const Classify = () => {
           {faAlphabets?.map((fa, key) => {
             return (
               <span key={key}>
-                {fa.alphabet}{faAlphabets.length - 1 !== key && ', '}
+                {fa}{faAlphabets.length - 1 !== key && ', '}
               </span>
             )
           })}
