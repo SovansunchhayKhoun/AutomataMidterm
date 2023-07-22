@@ -7,7 +7,7 @@ export const NumAlphabets = () => {
 
   return (
     <div
-      className='p-4 border-2 rounded-tl-md rounded-tr-md border-blue-500 w-full shadow-lg flex flex-col gap-2 justify-center'>
+      className='h-full p-4 border-2 rounded-tl-md rounded-tr-md border-blue-500 w-full shadow-lg flex flex-col gap-2 justify-center'>
       {/* get number of alphabets */}
       <label className={"flex items-center gap-1"} htmlFor="alphabet">
         <span>Alphabet:</span>
@@ -36,7 +36,7 @@ export const NumAlphabets = () => {
           </div>
         )}
       </div>
-
+      <span className={`${error ? 'text-red-500 text-xs' : 'hidden'}`}>{error && error.alphabetError}</span>
     </div>
   )
 }

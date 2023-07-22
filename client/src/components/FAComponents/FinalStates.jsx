@@ -7,7 +7,7 @@ export const FinalStates = () => {
   if (faStates.length > 0) {
     return (
       <div
-        className={'p-4 border-2 rounded-tl-md rounded-tr-md border-blue-500 w-full shadow-lg flex flex-col gap-2 justify-center'}>
+        className={'h-full p-4 border-2 rounded-tl-md rounded-tr-md border-blue-500 w-full shadow-lg flex flex-col gap-2 justify-center'}>
         <div>
           Final State
         </div>

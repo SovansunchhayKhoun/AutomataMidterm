@@ -7,7 +7,7 @@ export const TransitionTable = () => {
   const {faStates, faAlphabets, faStartState, faFinalStates} = fa
   if (faStates.length > 0 || faAlphabets.length > 0) {
     return (
-      <div className={"p-4 flex border-2 rounded-tl-md rounded-tr-md border-blue-500 flex-col gap-2"}>
+      <div className={"p-4 flex w-full border-2 rounded-tl-md rounded-tr-md border-blue-500 flex-col gap-2"}>
         <label htmlFor="">Transition Table</label>
         <Table>
           <Table.Head>

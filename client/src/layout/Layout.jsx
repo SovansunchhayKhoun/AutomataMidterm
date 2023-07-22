@@ -14,7 +14,7 @@ export const Layout = () => {
         <main className="
           min-[1880px]:px-96
           lg:px-16
-          md:px-6 md:pb-2 px-6 pt-12">
+          md:px-6 md:pb-2 px-6 pt-6">
           <Outlet />
         </main>
       {/*<AboveHead/>*/}

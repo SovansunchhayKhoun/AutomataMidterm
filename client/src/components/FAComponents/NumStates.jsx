@@ -6,7 +6,7 @@ export const NumStates = () => {
   const {faStates} = fa;
   return (
     <div
-      className='p-4 border-2 rounded-tl-md rounded-tr-md border-blue-500 w-full shadow-lg flex flex-col gap-2 justify-center'>
+      className='h-full p-4 border-2 rounded-tl-md rounded-tr-md border-blue-500 w-full shadow-lg flex flex-col gap-2 justify-center'>
       {/* get number of states */}
       <label className={"flex gap-1 items-center"} htmlFor="state">
         <span>State:</span>
@@ -35,7 +35,10 @@ export const NumStates = () => {
             Include trap?
           </div>
         )}
-
+      </div>
+      <div>
+        <span className={`${error ? 'text-red-500 text-xs' : 'hidden'}`}>{error && error.nfaError}</span>
+        <span className={`${error ? 'text-red-500 text-xs' : 'hidden'}`}>{error && error.stateError}</span>
       </div>
     </div>
   )
