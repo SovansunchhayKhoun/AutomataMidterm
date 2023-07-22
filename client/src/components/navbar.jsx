@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react'
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { UtilContext } from '../context/UtilContext';
 
 export const NavBar = () => {
@@ -8,8 +8,7 @@ export const NavBar = () => {
 
   const navLinks = [
     {title: "Construct FA", to: "/"},
-    {title: "Classify FA", to: "/classify"},
-    {title: "Validate String", to: "/validate"},
+    {title: "Classify FA", to: "/"},
     {title: "Convert from NFA to DFA", to: "/"},
     {title: "Minimize DFA", to: "/minimized"},
   ]
@@ -21,12 +20,12 @@ export const NavBar = () => {
         md:px-6 px-6 bg-blue-500 p-4 flex items-center justify-start list-none gap-x-5 text-white`}
       >
       {navLinks.map((li, key) => (
-        <Link to={li.to} onClick={() => {
+        <li onClick={() => {
           setNavBarSelect(li.title);
-          
+          navigate(li.to)
         }} key={key} className={`${li.title === navBarSelect && 'bg-white p-2 rounded-md text-black'}`}>
           {li.title}
-        </Link>
+        </li>
       ))}
       </nav>
   )
