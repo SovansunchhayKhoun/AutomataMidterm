@@ -74,10 +74,7 @@ export const MainProvider = ({ children }) => {
     if (!nfa) {
       // add trap
       if (!trapCheck) {
-        faStates.push({
-          index: 6,
-          state: `Trap`
-        })
+        faStates.push(`Trap`)
         setFaStates(faStates);
         setFa({ ...fa, faStates });
         // clearTransition();
@@ -120,10 +117,7 @@ export const MainProvider = ({ children }) => {
       )
 
       for (let i = 0; i < Number(event.target.value); i++) {
-        faStates.push({
-          index: i,
-          state: `q${i}`
-        })
+        faStates.push(`q${i}`)
 
         setFaStates(faStates)
 
@@ -163,10 +157,7 @@ export const MainProvider = ({ children }) => {
     // add epsilon
     if (!epsilonCheck) {
       setEpsilonCheck(true)
-      faAlphabets.push({
-        index: faAlphabets.length,
-        alphabet: '$',
-      })
+      faAlphabets.push('$')
       setTransitionSets(
         Array.from({ length: rows }, (_, rowIndex) => Array.from({ length: faAlphabets.length }, (_, colIndex) => {
           return {
@@ -221,10 +212,7 @@ export const MainProvider = ({ children }) => {
       )
       // setFa({...fa, transitionSets});
       for (let i = 0; i < event.target.value; i++) {
-        faAlphabets.push({
-          index: i,
-          alphabet: String.fromCharCode(i + 65), // convert num to char
-        })
+        faAlphabets.push(String.fromCharCode(i + 65))
         setFaAlphabets(faAlphabets)
         setFa({
           ...fa, faAlphabets,
@@ -281,11 +269,9 @@ export const MainProvider = ({ children }) => {
   const [inputString, setInputString] = useState('');
 
   const handleString = (event) => {
+    const {faAlphabets} = fa;
     const {value} = event.target;
     setInputString(value);
-
-    console.log(faAlphabets);
-    console.log(value)
   }
 
   const validateString = () => {

@@ -19,7 +19,7 @@ export const NumStates = () => {
         className="border-2 border-[#3B82F6] px-2 py-1 w-full" id="state" placeholder='Number of States...' />
       <div>
         Your states: [ {faStates?.map((fs, key) => {
-          return <span key={key}>{fs.state}{faStates.length - 1 !== key && ', '}</span>
+          return <span key={key}>{fs}{faStates.length - 1 !== key && ', '}</span>
         })} ]
       </div>
       {faStates?.length > 0 && (

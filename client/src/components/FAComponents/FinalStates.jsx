@@ -14,13 +14,13 @@ export const FinalStates = () => {
               </div>
               <div>
                 <div className='grid grid-cols-5 gap-1'>
-                  {faStates?.filter(fs => fs.state !== 'Trap').map((fs, key) => {
+                  {faStates?.filter(fs => fs !== 'Trap').map((fs, key) => {
                     return (
                       <div key={key} className='flex gap-1 items-center'>
                         <input type="checkbox" onChange={(event) => {
                           handleFinalState(event)
-                        }} value={fs.state} id={fs.state} />
-                        <label htmlFor={fs.state}>{fs.state}</label>
+                        }} value={fs} id={fs} />
+                        <label htmlFor={fs}>{fs}</label>
                       </div>
                     )
                   })}

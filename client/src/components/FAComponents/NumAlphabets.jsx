@@ -21,7 +21,7 @@ export const NumAlphabets = () => {
           type="number" id="alphabet" placeholder='Number of Alphabets' />
         <div>
           Your Alphabets: [ {faAlphabets?.map((fa, key) => {
-            return <span key={key}> {fa.alphabet}{faAlphabets.length - 1 !== key && ', '}</span>
+            return <span key={key}> {fa}{faAlphabets.length - 1 !== key && ', '}</span>
           })} ]
         </div>
         {faAlphabets.length > 0 && (

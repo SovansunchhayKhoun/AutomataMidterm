@@ -4,7 +4,7 @@ import { Table } from 'flowbite-react';
 
 export const TransitionTable = () => {
   const { fa, handleTransition } = useContext(MainContext);
-  const { faStates, faAlphabets } = fa
+  const { faStates, faAlphabets, faStartState } = fa
   return (
     <>
       <label htmlFor="">Transition Table</label>
@@ -16,17 +16,20 @@ export const TransitionTable = () => {
           {faAlphabets?.map((fa, key) => {
             return (
               <Table.HeadCell key={key}>
-                {fa.alphabet}
+                {fa}
               </Table.HeadCell>              
             )
           })}
         </Table.Head>
         <Table.Body className="divide-y">
-          {faStates?.filter(fs => fs.state !== 'Trap').map((fs, stateKey) => {
+          {faStates?.filter(fs => fs !== 'Trap').map((fs, stateKey) => {
           return (
             <Table.Row key={stateKey} className="bg-white dark:border-gray-700 dark:bg-gray-800">
               <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                {fs.state}
+                {fs} 
+                <span className='whitespace-nowrap'>
+                  Start State: {faStartState}
+                </span>
               </Table.Cell>
               {faAlphabets?.map((fa, alphabetKey) => {
                 return (
@@ -40,7 +43,7 @@ export const TransitionTable = () => {
                       } name="" id="">
                       {faStates?.map((fs, key) => {
                         return (
-                          <option value={fs.state} key={key}>{fs.state}</option>
+                          <option value={fs} key={key}>{fs}</option>
                         )
                       })}
                     </select>
