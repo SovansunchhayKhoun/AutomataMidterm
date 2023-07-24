@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
-import { NavBar } from "../components/NavBar";
+// import { NavBar } from "../components/NavBar";
 import { Header } from "../components/Header"
 import { AboveHead } from "../components/AboveHead";
 
@@ -9,7 +9,7 @@ export const Layout = () => {
   
   return (
     <div className="min-h-screen flex flex-col overflow-auto">
-      <NavBar />
+      {/*<NavBar />*/}
         <main className="
           min-[1880px]:px-96
           lg:px-16
