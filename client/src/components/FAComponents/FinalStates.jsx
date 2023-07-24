@@ -1,9 +1,10 @@
-import React, {useContext} from 'react'
+import React, {useContext, useEffect, useState} from 'react'
 import {MainContext} from '../../context/MainContext'
 
 export const FinalStates = () => {
   const {fa, handleFinalState} = useContext(MainContext)
   const {faStates, faFinalStates} = fa;
+
   if (faStates.length > 0) {
     return (
       <div
@@ -15,7 +16,7 @@ export const FinalStates = () => {
           {faStates?.filter(fs => fs !== 'Trap').map((fs, key) => {
             return (
               <div key={key} className='flex gap-1 items-center'>
-                <input type="checkbox" onChange={(event) => {
+                <input checked={faFinalStates.includes(fs)} type="checkbox" onChange={(event) => {
                   handleFinalState(event)
                 }} value={fs} id={fs}/>
                 <label htmlFor={fs}>{fs}</label>

@@ -10,11 +10,10 @@ export const Layout = () => {
   return (
     <div className="min-h-screen flex flex-col overflow-auto">
       <NavBar />
-      <Header />
         <main className="
           min-[1880px]:px-96
           lg:px-16
-          md:px-6 md:pb-2 px-6 pt-6">
+          md:px-6 md:pb-2 px-6 mt-48">
           <Outlet />
         </main>
       {/*<AboveHead/>*/}

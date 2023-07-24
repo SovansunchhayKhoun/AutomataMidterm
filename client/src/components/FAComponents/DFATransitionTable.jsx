@@ -2,13 +2,19 @@ import React, {useContext} from 'react'
 import {MainContext} from '../../context/MainContext'
 import {Table} from 'flowbite-react';
 
-export const TransitionTable = () => {
+export const DFATransitionTable = () => {
   const {fa, handleTransition} = useContext(MainContext);
   const {faStates, faAlphabets, faStartState, faFinalStates} = fa
   if (faStates.length > 0 || faAlphabets.length > 0) {
     return (
       <div className={"p-4 flex w-full border-2 rounded-tl-md rounded-tr-md border-blue-500 flex-col gap-2"}>
-        <label htmlFor="">Transition Table</label>
+        <div className={'flex flex-col gap-1'}>
+          <p className={'font-semibold'}>Transition Table</p>
+          <ul className={'text-xs text-gray-500'}>
+            <li>* The Header is the set of alphabets for transition</li>
+            <li>* The select box is the resulting state</li>
+          </ul>
+        </div>
         <Table>
           <Table.Head>
             <Table.HeadCell>
@@ -45,7 +51,7 @@ export const TransitionTable = () => {
                       <Table.Cell key={alphabetKey}
                                   className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
                         <select onChange={(event) => {
-                          handleTransition(event,
+                          handleTransition(event.target.value,
                             {row: stateKey, transitState: fs},
                             {col: alphabetKey, transitAlphabet: fa}
                           )
