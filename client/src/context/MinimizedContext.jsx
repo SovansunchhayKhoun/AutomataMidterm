@@ -7,10 +7,8 @@ export const MinimizedProvider = ({ children }) => {
   const [transitionTable, setTransitionTable] = useState(
     Array.from({ length: 1 }, () => Array.from({ length: 1 }, () => "q0"))
   );
-  const [transitions,setTransitions]= useState([{
-    states: 'q0',
-    transitions: []
-  }])
+  const transitions = []
+  let inaccessibleState = []
   const initializeTransitionTable = (row, column, value = "q0") => {
     setTransitionTable(
       Array.from({ length: row }, () =>
@@ -93,6 +91,55 @@ export const MinimizedProvider = ({ children }) => {
     setDfa({ ...dfa });
   };
 
+  const handleTransitions = () => {
+    while(transitions.length > 0){
+      transitions.pop()
+    }
+    for (let i = 0; i < states.length; i++) {
+      const transition = {
+        state: states[i],
+        transition: transitionTable[i],
+      };
+      transitions.push(transition);
+    }
+    console.log(transitions);
+  }
+
+  const findInaccessibleState = () => {
+    while(inaccessibleState.length > 0){
+      inaccessibleState.pop()
+    }
+    //state
+    let i = 0;
+    let j,k
+    while (i<states.length){
+      //row
+      for(j=0;j<states.length;j++){
+        //column
+        for( k=0;k<alphabets.length;k++){
+          if(states[i] == transitionTable[j][k]){
+            console.log(`state: ${states[i]} transitions: ${alphabets[k]} result: ${transitionTable[j][k]}`)
+            j=states.length
+            break
+          }
+        }
+      }
+      if(j===states.length && k===alphabets.length){
+        console.log(states[i])
+        inaccessibleState.push(states[i])
+        
+      }
+      i++
+      
+    }
+    console.log(inaccessibleState)
+  }
+ 
+  const handleSubmit = () => {
+    handleTransitions()
+    findInaccessibleState()
+  }
+
   const handleFinalState = (event) => {
     const { value, checked } = event.target;
     if (!checked) {
@@ -125,7 +172,9 @@ export const MinimizedProvider = ({ children }) => {
         handleTransistionTable,
         initializeTransitionTable,
         transitions,
-        setTransitions,
+        handleSubmit,
+        handleTransitions,
+        findInaccessibleState
       }}
     >
       {children}
