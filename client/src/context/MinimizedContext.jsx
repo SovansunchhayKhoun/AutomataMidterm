@@ -103,7 +103,7 @@ export const MinimizedProvider = ({ children }) => {
       };
       transitions.push(transition);
     }
-    console.log('Transitions: ')
+    console.log("Transitions: ");
     console.log(transitions);
   };
 
@@ -140,7 +140,7 @@ export const MinimizedProvider = ({ children }) => {
 
   //state pairs that are marked (if one is final state and another is not then it is marked)
   const markedPairs = [];
-  const unmarkedPairs = []
+  const unmarkedPairs = [];
 
   //all state pairs
   const DfaPairs = [];
@@ -153,61 +153,88 @@ export const MinimizedProvider = ({ children }) => {
     for (let i = 0; i < states.length; i++) {
       for (let j = 1; j < states.length; j++) {
         if (states[i] !== states[j] && i !== j) {
-          if(!checkIfExist(DfaPairs,states[i],states[j])){
-            DfaPairs.push([states[i],states[j]])
+          if (!checkIfExist(DfaPairs, states[i], states[j])) {
+            DfaPairs.push([states[i], states[j]]);
           }
         }
       }
     }
-    console.log('DFA Pairs: ')
+    console.log("DFA Pairs: ");
     console.log(DfaPairs);
   };
 
-  function checkIfHaveFinalState (value1,value2) {
-    if((dfa.finalStates.includes(value1)) ^ dfa.finalStates.includes(value2)){
-      return true
-    }else{
-      return false
+  function checkIfHaveFinalState(value1, value2) {
+    if (dfa.finalStates.includes(value1) ^ dfa.finalStates.includes(value2)) {
+      return true;
+    } else {
+      return false;
     }
   }
 
-  function findTransistion (state,alphabet) {
-    return transitions.find(x => x.state === state).transition[`${alphabet}`]
+  function findTransistion(state, alphabet) {
+    return transitions.find((x) => x.state === state).transition[`${alphabet}`];
   }
 
   //first iteration
-  function findMarkedPairs () {
-    while(markedPairs.length>0 || unmarkedPairs.length>0){
-      markedPairs.pop()
-      unmarkedPairs.pop()
+  function findMarkedPairs() {
+    while (markedPairs.length > 0 || unmarkedPairs.length > 0) {
+      markedPairs.pop();
+      unmarkedPairs.pop();
     }
     DfaPairs.map((pair) => {
-      if(checkIfHaveFinalState(pair[0],pair[1])){
-        markedPairs.push([pair[0],pair[1]])
-      }else{
-        unmarkedPairs.push([pair[0],pair[1]])
+      if (checkIfHaveFinalState(pair[0], pair[1])) {
+        markedPairs.push([pair[0], pair[1]]);
+      } else {
+        unmarkedPairs.push([pair[0], pair[1]]);
       }
-    })
-    console.log(markedPairs)
-    console.log(unmarkedPairs)
-
+    });
     unmarkedPairs.map((pair) => {
-      for(let i = 0 ;i< alphabets.length;i++){
-        let temp = []
-        temp.push(findTransistion(pair[0],i))
-        temp.push(findTransistion(pair[1],i))
-        if(checkIfHaveFinalState(findTransistion(pair[0],i),findTransistion(pair[1],i))){
-          markedPairs.push([pair[0],pair[1]])
-          break
+      for (let i = 0; i < alphabets.length; i++) {
+        if (
+          checkIfHaveFinalState(
+            findTransistion(pair[0], i),
+            findTransistion(pair[1], i)
+          )
+        ) {
+          markedPairs.push([pair[0], pair[1]]);
+          // let index = 0;
+          // for (index = 0; index < unmarkedPairs.length; index++) {
+          //   if (
+          //     (unmarkedPairs[index][0] === pair[0] &&
+          //       unmarkedPairs[index][1] === pair[1]) ||
+          //     (unmarkedPairs[index][0] === pair[1] &&
+          //       unmarkedPairs[index][1] === pair[0])
+          //   ) {
+          //     console.log(index)
+          //     break;
+          //   }
+          // }
+          break;
         }
       }
-    })
-    console.log(checkIfExist(markedPairs,'q0','q4'))
+    });
+
+
+    // let index = 0;
+    //       for (index = 0; index < unmarkedPairs.length; index++) {
+    //         if (
+    //           (unmarkedPairs[index][0] === 'q0' &&
+    //             unmarkedPairs[index][1] === 'q1' )||
+    //           (unmarkedPairs[index][ 1] === 'q0' &&
+    //             unmarkedPairs[index][0] === 'q1')
+    //         ) {
+    //           unmarkedPairs.splice(index, 1);
+    //           break;
+    //         }
+    //       }
+
+    console.log(markedPairs);
+    console.log(unmarkedPairs);
 
     // console.log(checkIfHaveFinalState(findTransistion(unmarkedPairs[2][0],0),findTransistion(unmarkedPairs[2][1],0)) ^ checkIfHaveFinalState(findTransistion(unmarkedPairs[2][0],1),findTransistion(unmarkedPairs[2][1],1)))
   }
 
-  function checkIfExist (DFAPairs,value1, value2) {
+  function checkIfExist(DFAPairs, value1, value2) {
     let k = 0;
     while (k < DFAPairs.length) {
       if (
@@ -219,24 +246,23 @@ export const MinimizedProvider = ({ children }) => {
         k++;
       }
     }
-    if(k === DFAPairs.length){
-      return false
-    }else{
-      return true
+    if (k === DFAPairs.length) {
+      return false;
+    } else {
+      return true;
     }
   }
 
   const minimizedDfa = () => {
-    generateDfaPairs()
-
+    generateDfaPairs();
   };
 
   const handleSubmit = () => {
-    console.log('DFA: ')
-    console.log(dfa)
+    console.log("DFA: ");
+    console.log(dfa);
     handleTransitions();
-    minimizedDfa()
-    findMarkedPairs()
+    minimizedDfa();
+    findMarkedPairs();
 
     // findInaccessibleState()
   };
