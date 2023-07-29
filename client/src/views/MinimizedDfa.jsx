@@ -1,7 +1,8 @@
-import { useEffect, useContext } from "react";
+import { useEffect, useContext, useState } from "react";
 
 import { MinimizedContext } from "../context/MinimizedContext";
 import { DfaTransitionTable } from "../components/DfaTransitionTable";
+import { MinimizedTable } from "../components/MinimizeTable";
 
 export const MinimizedDfa = () => {
   const {
@@ -19,8 +20,11 @@ export const MinimizedDfa = () => {
     generateAlphabets();
     generateStates();
   }, []);
-  return (
-    <main className="flex gap-4">
+
+  const [isHidden,setIsHidden] = useState(false)
+  if(!isHidden){
+    return (
+      <main className="flex gap-4">
       <section className="w-full">
         <div className="grid grid-cols-2 gap-4 w-1/2 items-center">
           {/* get number of states */}
@@ -157,15 +161,23 @@ export const MinimizedDfa = () => {
           <label htmlFor="">Transition Table</label>
           <DfaTransitionTable />
         </div>
+        
+
 
         <button
           onClick={() => {
             handleSubmit()
+            setIsHidden(true)
           }}
         >
           Submit
         </button>
       </section>
     </main>
-  );
+    )
+  }else{
+    return(
+      <MinimizedTable/>
+    )
+  }
 };

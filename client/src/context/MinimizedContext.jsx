@@ -145,7 +145,9 @@ export const MinimizedProvider = ({ children }) => {
   //all state pairs
   const DfaPairs = [];
 
-  //generate all possible states pair without repitition
+  const minimizedTransistionTable = [];
+
+  // generate all possible states pair without repitition
   const generateDfaPairs = () => {
     while (DfaPairs.length > 0) {
       DfaPairs.pop();
@@ -175,65 +177,50 @@ export const MinimizedProvider = ({ children }) => {
     return transitions.find((x) => x.state === state).transition[`${alphabet}`];
   }
 
-  //first iteration
-  function findMarkedPairs() {
-    while (markedPairs.length > 0 || unmarkedPairs.length > 0) {
-      markedPairs.pop();
+
+  function clearUnmarkedPair() {
+    while (unmarkedPairs.length > 0) {
       unmarkedPairs.pop();
     }
-    DfaPairs.map((pair) => {
-      if (checkIfHaveFinalState(pair[0], pair[1])) {
-        markedPairs.push([pair[0], pair[1]]);
-      } else {
-        unmarkedPairs.push([pair[0], pair[1]]);
-      }
-    });
+  }
+
+  function findMarkedPairs() {
+    let isMarked = false;
     unmarkedPairs.map((pair) => {
       for (let i = 0; i < alphabets.length; i++) {
         if (
-          checkIfHaveFinalState(
+          checkIfExist(
+            markedPairs,
             findTransistion(pair[0], i),
             findTransistion(pair[1], i)
           )
         ) {
           markedPairs.push([pair[0], pair[1]]);
-          // let index = 0;
-          // for (index = 0; index < unmarkedPairs.length; index++) {
-          //   if (
-          //     (unmarkedPairs[index][0] === pair[0] &&
-          //       unmarkedPairs[index][1] === pair[1]) ||
-          //     (unmarkedPairs[index][0] === pair[1] &&
-          //       unmarkedPairs[index][1] === pair[0])
-          //   ) {
-          //     console.log(index)
-          //     break;
-          //   }
-          // }
+          isMarked = true;
           break;
         }
       }
     });
-
-
-    // let index = 0;
-    //       for (index = 0; index < unmarkedPairs.length; index++) {
-    //         if (
-    //           (unmarkedPairs[index][0] === 'q0' &&
-    //             unmarkedPairs[index][1] === 'q1' )||
-    //           (unmarkedPairs[index][ 1] === 'q0' &&
-    //             unmarkedPairs[index][0] === 'q1')
-    //         ) {
-    //           unmarkedPairs.splice(index, 1);
-    //           break;
-    //         }
-    //       }
-
-    console.log(markedPairs);
-    console.log(unmarkedPairs);
-
-    // console.log(checkIfHaveFinalState(findTransistion(unmarkedPairs[2][0],0),findTransistion(unmarkedPairs[2][1],0)) ^ checkIfHaveFinalState(findTransistion(unmarkedPairs[2][0],1),findTransistion(unmarkedPairs[2][1],1)))
+    //Clear Unmarked Pair
+    clearUnmarkedPair();
+    //Copy from Dfa pair to unmark pair array only the pair that doesnt exist in mark pair
+    DfaPairs.map((pair) => {
+      if (!checkIfExist(markedPairs, pair[0], pair[1])) {
+        unmarkedPairs.push([pair[0], pair[1]]);
+      }
+    });
+    if (isMarked) {
+      findMarkedPairs(unmarkedPairs);
+    }
   }
 
+  function clearMarkedPair() {
+    while (markedPairs.length > 0) {
+      markedPairs.pop();
+    }
+  }
+
+  //Check if the pair exist in a certain array
   function checkIfExist(DFAPairs, value1, value2) {
     let k = 0;
     while (k < DFAPairs.length) {
@@ -254,18 +241,131 @@ export const MinimizedProvider = ({ children }) => {
   }
 
   const minimizedDfa = () => {
+    //Generate all possible pair of states
     generateDfaPairs();
+
+    //Make sure that the array are clean
+    clearMarkedPair();
+    clearUnmarkedPair();
+
+    //Iteration 1
+    //Mark those that one is final and another is another
+    DfaPairs.map((pair) => {
+      if (checkIfHaveFinalState(pair[0], pair[1])) {
+        markedPairs.push([pair[0], pair[1]]);
+      } else {
+        unmarkedPairs.push([pair[0], pair[1]]);
+      }
+    });
+
+    findMarkedPairs();
+
+    console.log("Marked Pairs");
+    console.log(markedPairs);
+    console.log("Unmarked Pairs");
+    console.log(unmarkedPairs);
+
+    while (minimizedTransistionTable.length > 0) {
+      minimizedTransistionTable.pop();
+    }
+
+    let i = 0;
+    let equivalenceStates = [];
+    while (i < states.length) {
+      let j = 0;
+      if (!equivalenceStates.includes(states[i])) {
+        for (j = 0; j < unmarkedPairs.length; j++) {
+          if (
+            states[i] === unmarkedPairs[j][0] ||
+            states[i] === unmarkedPairs[j][1]
+          ) {
+            break;
+          }
+        }
+        if (j === unmarkedPairs.length) {
+          let transition = [];
+          for (let k = 0; k < alphabets.length; k++) {
+            transition.push(findTransistion(states[i], k));
+          }
+          let temp = {
+            state: states[i],
+            transitionTable: transition,
+          };
+          minimizedTransistionTable.push(temp);
+        } else {
+          for (let index = 0; index < 2; index++) {
+            if (!equivalenceStates.includes(unmarkedPairs[j][index])) {
+              equivalenceStates.push(unmarkedPairs[j][index]);
+            }
+          }
+        }
+      }
+      i++;
+    }
+
+    // let st = ['q1','q2','q3','q4','q5']
+    // let unmarkedPairs = [
+    //   ['q1', 'q2'],
+    //   ['q1', 'q3'],
+    //   ['q2', 'q3'],
+    //   ['q4', 'q5'],
+    // ]
+
+    let result = []
+
+    let index = 0
+    while(index<equivalenceStates.length){
+      let isCheck = false
+      for(let i = 0;i<result.length;i++){
+        if(result[i].includes(equivalenceStates[index])){
+          isCheck = true
+          break
+        }
+      }
+      if(!isCheck){
+        let tmp = []
+        for(let i=0;i<unmarkedPairs.length;i++){
+          if(unmarkedPairs[i].includes(equivalenceStates[index])){
+            for(let j = 0 ;j<2;j++){
+              if(!tmp.includes(unmarkedPairs[i][j])){
+                tmp.push(unmarkedPairs[i][j])
+              }
+            }
+          }
+        }
+        result.push(tmp)
+      }
+      index++
+    }
+    
+    //insert all to the new table
+    
+    for(let i = 0;i<result.length;i++){
+      let transition = [];
+      for (let k = 0; k < alphabets.length; k++) {
+        transition.push(findTransistion(result[i][0], k));
+      }
+      let temp = {
+        state: result[i],
+        transitionTable: transition,
+      };
+      minimizedTransistionTable.push(temp);
+    }
+    
+
+    
   };
+  
 
   const handleSubmit = () => {
     console.log("DFA: ");
     console.log(dfa);
     handleTransitions();
     minimizedDfa();
-    findMarkedPairs();
-
-    // findInaccessibleState()
+    console.log(minimizedTransistionTable)
   };
+
+ 
 
   const handleFinalState = (event) => {
     const { value, checked } = event.target;
@@ -302,6 +402,7 @@ export const MinimizedProvider = ({ children }) => {
         handleSubmit,
         handleTransitions,
         findInaccessibleState,
+        minimizedTransistionTable
       }}
     >
       {children}
