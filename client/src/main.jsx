@@ -7,6 +7,7 @@ import './index.css'
 import './script.js'
 import { UtilProvider } from './context/UtilContext.jsx'
 import { MainProvider } from './context/MainContext.jsx'
+import { MinimizedProvider } from './context/MinimizedContext.jsx'
 
 const client = new QueryClient();
 
@@ -15,7 +16,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <QueryClientProvider client={client}>
       <UtilProvider>
         <MainProvider>
-          <RouterProvider router={router} />
+          <MinimizedProvider>
+            <RouterProvider router={router} />
+          </MinimizedProvider>
         </MainProvider>
       </UtilProvider>
     </QueryClientProvider>
