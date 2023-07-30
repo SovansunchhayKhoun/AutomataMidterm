@@ -376,8 +376,12 @@ export const MinimizedProvider = ({ children }) => {
   const handleSubmit = () => {
     handleTransitions();
     minimizedDfa();
-    // console.log('After minimized: ')
-    // console.log(minimizedTransistionTable)
+    console.log("DFA")
+    console.log(dfa)
+    console.log('Before Minimized')
+    console.log(transitions)
+    console.log('After minimized: ')
+    console.log(minimizedTransistionTable)
   };
 
   const handleFinalState = (event) => {
