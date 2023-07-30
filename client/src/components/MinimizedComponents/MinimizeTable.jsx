@@ -1,9 +1,9 @@
 import React, { useContext } from "react";
-import { MinimizedContext } from "../context/MinimizedContext";
+import { MinimizedContext } from "../../context/MinimizedContext";
 import { Table } from "flowbite-react";
 
 export const MinimizedTable = () => {
-  const { minimizedTransistionTable, alphabets, dfa } =
+  const { minimizedResult, alphabets, dfa} =
     useContext(MinimizedContext);
   return (
     <div>
@@ -15,7 +15,7 @@ export const MinimizedTable = () => {
           })}
         </Table.Head>
         <Table.Body className="divide-y">
-          {minimizedTransistionTable?.map((element, stateKey) => {
+          {minimizedResult?.map((element, stateKey) => {
             return (
               <Table.Row
                 key={stateKey}

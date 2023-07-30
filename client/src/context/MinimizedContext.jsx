@@ -4,7 +4,10 @@ export const MinimizedContext = createContext();
 export const MinimizedProvider = ({ children }) => {
   const [states, setStates] = useState([]);
   const [alphabets, setAlphabets] = useState([]);
+  const [showModal,setShowModal] = useState(false)
   let newStates = []
+  const [minimizedResult,setMinimizeResult] = useState()
+  const [error,setError] = useState({})
   const [transitionTable, setTransitionTable] = useState(
     Array.from({ length: 1 }, () => Array.from({ length: 1 }, () => "q0"))
   );
@@ -78,16 +81,12 @@ export const MinimizedProvider = ({ children }) => {
   };
 
   const handleStartState = (event) => {
-    const { value, checked } = event.target;
-    if (!checked) {
-      // remove one start state
-      const index = dfa.startState.indexOf(value);
-      dfa.startState.splice(index, 1);
-    } else {
+    dfa.startState.pop()
+    const { value } = event.target;
       if (!dfa.startState.includes(value)) {
         dfa.startState.push(value);
       }
-    }
+    
     setDfa({ ...dfa });
   };
 
@@ -103,8 +102,6 @@ export const MinimizedProvider = ({ children }) => {
       };
       transitions.push(transition);
     }
-    console.log("Transitions: ");
-    console.log(transitions);
   };
 
   //find the state that cannot access from start state
@@ -157,10 +154,10 @@ export const MinimizedProvider = ({ children }) => {
     })
     setStates(tempState)
     newStates = tempState
-    console.log('Inaccesssible state: ')
-    console.log(inaccessibleState)
-    console.log('New transition: ')
-    console.log(transitions)
+    // console.log('Inaccesssible state: ')
+    // console.log(inaccessibleState)
+    // console.log('New transition: ')
+    // console.log(transitions)
   };
 
   //state pairs that are marked (if one is final state and another is not then it is marked)
@@ -186,8 +183,8 @@ export const MinimizedProvider = ({ children }) => {
         }
       }
     }
-    console.log("DFA Pairs: ");
-    console.log(DfaPairs);
+    // console.log("DFA Pairs: ");
+    // console.log(DfaPairs);
   };
 
   function checkIfHaveFinalState(value1, value2) {
@@ -275,7 +272,7 @@ export const MinimizedProvider = ({ children }) => {
     clearMarkedPair();
     clearUnmarkedPair();
 
-    //Iteration 1
+    //Step 1
     //Mark those that one is final and another is another
     DfaPairs.map((pair) => {
       if (checkIfHaveFinalState(pair[0], pair[1])) {
@@ -285,17 +282,13 @@ export const MinimizedProvider = ({ children }) => {
       }
     });
 
+    //Step 2
+    //Keep find marked pair until no new pairs is created
     findMarkedPairs();
-
-    console.log("Marked Pairs");
-    console.log(markedPairs);
-    console.log("Unmarked Pairs");
-    console.log(unmarkedPairs);
 
     while (minimizedTransistionTable.length > 0) {
       minimizedTransistionTable.pop();
     }
-
     let i = 0;
     let equivalenceStates = [];
     while (i < newStates.length) {
@@ -329,14 +322,6 @@ export const MinimizedProvider = ({ children }) => {
       }
       i++;
     }
-
-    // let st = ['q1','q2','q3','q4','q5']
-    // let unmarkedPairs = [
-    //   ['q1', 'q2'],
-    //   ['q1', 'q3'],
-    //   ['q2', 'q3'],
-    //   ['q4', 'q5'],
-    // ]
 
     let result = [];
 
@@ -378,16 +363,14 @@ export const MinimizedProvider = ({ children }) => {
       };
       minimizedTransistionTable.push(temp);
     }
+    setMinimizeResult(minimizedTransistionTable)
   };
 
   const handleSubmit = () => {
-    console.log("DFA: ");
-    console.log(dfa);
     handleTransitions();
     minimizedDfa();
-    console.log('After minimized: ')
-    console.log(minimizedTransistionTable)
-  
+    // console.log('After minimized: ')
+    // console.log(minimizedTransistionTable)
   };
 
   const handleFinalState = (event) => {
@@ -427,6 +410,12 @@ export const MinimizedProvider = ({ children }) => {
         handleTransitions,
         findInaccessibleState,
         minimizedTransistionTable,
+        showModal,
+        setShowModal,
+        error,
+        setError,
+        minimizedResult,
+        setMinimizeResult
       }}
     >
       {children}
