@@ -4,7 +4,7 @@ import {MainContext} from "../../context/MainContext.jsx";
 export const TransitionDiagram = () => {
   const {fa} = useContext(MainContext);
   const {transitionSets} = fa;
-  if(transitionSets.length > 0) {
+  if (transitionSets.length > 0) {
     return (
       <div
         className={'h-full p-4 w-full box-border flex flex-col items-center border-blue-500 border-2 rounded-tl-md rounded-tr-md'}>
@@ -18,7 +18,10 @@ export const TransitionDiagram = () => {
                     <div key={key} className={'w-fit text-white bg-blue-950 px-2 py-1 rounded-md'}>
                       {s.transitState}&nbsp; -&gt; &nbsp;
                       {s.transitAlphabet}&nbsp;
-                      =&nbsp;{s.transitResult}
+                      =&nbsp;{s.transitResult.map((res, key) => (
+                      <span key={key}>{res}{s.transitResult.length - 1 !== key && ', '}</span>)
+                    )
+                    }
                       <br/>
                       {s.startState && `SS: ${s.startState}`}
                       {s.finalState && `FS: ${s.finalState}`}
