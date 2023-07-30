@@ -4,6 +4,21 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Automata Final Project</title>
+    
+    <script type="text/javascript">
+      (function (l) {
+        if (l.search[1] === "/") {
+          var decoded = l.search
+            .slice(1)
+            .split("&")
+            .map(function (s) {
+              return s.replace(/~and~/g, "&");
+            })
+            .join("?");
+          window.history.replaceState(null, null, l.pathname.slice(0, -1) + decoded + l.hash);
+        }
+      })(window.location);
+    </script>
     <script type="module" crossorigin src="/AutomataMidterm/assets/index-b3c8bdca.js"></script>
     <link rel="modulepreload" crossorigin href="/AutomataMidterm/assets/jquery-e66bc7ee.js">
     <link rel="modulepreload" crossorigin href="/AutomataMidterm/assets/react-e3f22801.js">
