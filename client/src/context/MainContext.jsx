@@ -1,18 +1,13 @@
-import React, {createContext, useState, useRef, useEffect} from 'react'
+import React, {createContext, useState} from 'react'
 
 export const MainContext = createContext();
 export const MainProvider = ({children}) => {
-  // Notes
-  // when input a -> q1   
-  // b -> q2 (f-state) if(the end of the string is q2, it is acceptable)
-  // if q2 meets a -> q1 ( not acceptable )
-  // if meets b again then b -> q2 (acceptable)
-
   const [error, setError] = useState({});
   const [rows, setRows] = useState(0);
   const [cols, setCols] = useState(0);
   const [epsilonCheck, setEpsilonCheck] = useState(false);
   const [nfa, setNfa] = useState(false);
+  const [isAccepted, setIsAccepted] = useState(false);
 
   // fa definitions
   const [fa, setFa] = useState({
@@ -32,10 +27,8 @@ export const MainProvider = ({children}) => {
     })),
   });
   const [inputString, setInputString] = useState('');
-  const [trapCheck, setTrapCheck] = useState(false);
 
   const clearFaState = () => {
-    setTrapCheck(false);
     setFa({
       ...fa, faStates: [], faStartStates: [], faFinalStates: []
     });
@@ -46,7 +39,6 @@ export const MainProvider = ({children}) => {
       return {
         transitState: `q${rowIndex}`,
         transitAlphabet: String.fromCharCode(colIndex + 97),
-        // transitResult: ['q0'],
         transitResult: [],
         startState: fa.faStartState === `q${rowIndex}`,
         finalState: fa.faFinalStates.includes(`q${rowIndex}`)
@@ -54,56 +46,6 @@ export const MainProvider = ({children}) => {
     }))
 
     setFa({...fa})
-  }
-
-  const removeTraps = () => {
-    const {transitionSets} = fa;
-    transitionSets.forEach((ts) => {
-      ts.forEach((set) => {
-        // set.transitResult = ['q0'];
-        set.transitResult = [];
-      })
-    })
-    setFa({...fa})
-  }
-
-  const adjustTrap = (nfa) => {
-    if (nfa) {
-      if (fa.faStates.some((fa) => fa === 'Trap')) {
-        setError({...error, nfaError: 'Cannot Set Trap if FA is Non-Deterministic'})
-        fa.faStates.splice(fa.faStates.indexOf('Trap'), 1);
-        // setFaStates([...faStates]);
-        setFa({...fa});
-        setTrapCheck(false);
-      }
-    }
-
-    if (!nfa) {
-      // add trap
-      if (!trapCheck) {
-        fa.faStates.push(`Trap`)
-        fa.transitionSets = Array.from({length: fa.faStates.length}, (_, rowIndex) => Array.from({length: cols}, (_, colIndex) => {
-            return {
-              transitState: rowIndex !== fa.faStates.length - 1 ? `q${rowIndex}` : 'Trap',
-              transitAlphabet: `q${colIndex}`,
-              // transitResult: [`q0`],
-              transitResult: [],
-              startState: fa.faStartState === `q${rowIndex}`,
-              finalState: fa.faFinalStates.includes(`q${rowIndex}`)
-            }
-          }
-        ))
-        setFa({...fa});
-        setTrapCheck(true);
-      } else {
-        // remove trap
-        fa.faStates.splice(fa.faStates.indexOf('Trap'), 1);
-        setFa({...fa});
-        removeTraps();
-        setTrapCheck(false);
-        clearTransition()
-      }
-    }
   }
 
   const generateStates = (event) => {
@@ -149,22 +91,19 @@ export const MainProvider = ({children}) => {
   }
 
   const adjustEpsilon = () => {
-    // remove epsilon
     setError({...error, nfaError: ''})
+    // remove epsilon
     if (epsilonCheck) {
-      console.log('remove')
-      console.log(fa.faStartState)
       const index = fa.faAlphabets.indexOf('$');
       fa.faAlphabets.splice(index, 1);
       setEpsilonCheck(false);
-
       setFa({...fa})
       classifyFA()
-      // setNfa(false);
       clearTransition();
     }
     // add epsilon
     if (!epsilonCheck) {
+      // removeTrap()
       setEpsilonCheck(true)
       fa.faAlphabets.push('$')
 
@@ -179,8 +118,6 @@ export const MainProvider = ({children}) => {
         }
       }))
 
-      adjustTrap(true);
-      // setNfa(true);
       classifyFA()
       setFa({...fa})
     }
@@ -194,12 +131,12 @@ export const MainProvider = ({children}) => {
 
   const generateAlphabets = (event) => {
     setError({...error, alphabetError: ''});
+    // to reinitialize alphabets and transition every time the number of alphabets changes
     clearFaAlphabets();
     clearTransition();
 
     // if 0 clear alphabets
     if (Number(event.target.value) <= 0) {
-      // setFa({...fa, faAlphabets: []});
       setCols(0);
       clearFaAlphabets();
     }
@@ -209,13 +146,12 @@ export const MainProvider = ({children}) => {
 
       for (let i = 0; i < event.target.value; i++) {
         // insert new alphabets
-        fa.faAlphabets.push(String.fromCharCode(i + 97))
+        fa.faAlphabets.push(String.fromCharCode(i + 97)) // convert from integer to character
         // update default transition values
         fa.transitionSets = Array.from({length: rows}, (_, rowIndex) => Array.from({length: Number(event.target.value)}, (_, colIndex) => {
           return {
             transitState: `q${rowIndex}`,
             transitAlphabet: String.fromCharCode(colIndex + 97),
-            // transitResult: [`q0`],
             transitResult: [],
             startState: `q${rowIndex}` === fa.faStartState,
             finalState: fa.faFinalStates === `q${rowIndex}`
@@ -232,9 +168,8 @@ export const MainProvider = ({children}) => {
   }
 
   const handleStartState = (value) => {
-    // const {value} = event.target;
     const {transitionSets} = fa;
-
+    // update start state value
     transitionSets.forEach(tr => {
       tr.forEach(set => {
         if (set.transitState !== value) {
@@ -289,13 +224,17 @@ export const MainProvider = ({children}) => {
     const {transitionSets, faAlphabets} = fa;
     let flag = false;
     let sum = 0;
+
     if (faAlphabets.includes('$')) { // check if alphabet set includes an epsilon
       setNfa(true)
       flag = true;
     } else {
+      // Check the total transition
+      // If it has this exact amount, TF = Q * Sigma => DFA
+      // If over or less => NFA
       transitionSets.forEach(tr => tr.forEach(set => {
         sum += set.transitResult.length;
-        if(sum !== fa.faStates.length * fa.faAlphabets.length) {
+        if (sum !== fa.faStates.length * fa.faAlphabets.length) {
           setNfa(true)
           flag = true
         } else {
@@ -312,26 +251,24 @@ export const MainProvider = ({children}) => {
   const handleTransition = (result, state, alphabet, event) => {
     const {checked} = event.target;
     const {transitionSets} = fa;
-    const {row, transitState} = state;
-    const {col, transitAlphabet} = alphabet;
+    const {row} = state;
+    const {col} = alphabet;
 
     const currentTr = transitionSets[row][col];
-    // console.log(currentTr.transitResult)
+    // push transition result
     if (checked && !currentTr.transitResult.includes(result)) {
       currentTr.transitResult.push(result)
       // classify FA
       classifyFA()
-    } else {
+    } else { // remove transition result
       currentTr.transitResult.splice(currentTr.transitResult.indexOf(result), 1);
       // classify FA
       classifyFA()
     }
     setFa({...fa})
-    // console.log(transitionSets[row][col].transitResult)
   }
 
-
-  const handleString = (event) => {
+  const handleString = (event) => { // capture input string
     setError({...error, stringError: ''})
     setIsAccepted(false)
     const {value} = event.target;
@@ -342,7 +279,7 @@ export const MainProvider = ({children}) => {
     const {faAlphabets} = fa;
     let i = inputString.length - 1;
     let flag = true;
-
+    // check whether input string fits the existing set of alphabets => return boolean value
     while (i >= 0) {
       if (!faAlphabets.includes(inputString[i])) {
         return false;
@@ -355,6 +292,9 @@ export const MainProvider = ({children}) => {
   function getStartState() {
     const {transitionSets} = fa;
     let startState = [];
+    // get the value of start state from the transition function
+    // which will be used as the starting node to validate input
+    // strings
     transitionSets.forEach(tr => {
       tr.forEach(set => {
         if (set.startState) {
@@ -365,26 +305,16 @@ export const MainProvider = ({children}) => {
     return startState;
   }
 
-  function getFinalState() {
-    const {transitionSets} = fa;
-    let finalState = [];
-    transitionSets.forEach(tr => {
-      tr.forEach(set => {
-        if (set.finalState && !finalState.includes(set.transitState)) {
-          finalState.push(set.transitState)
-        }
-      })
-    })
-    return finalState;
-  }
-
-  const findState = (resultState) => {
+  const findState = (state) => {
     const {transitionSets} = fa
     let result = [];
+    // find a state according to the parameter which then
+    // will be set as a node to be used to validate the next value
+    // of the input string
     transitionSets.forEach(tr => {
       tr.forEach(set => {
-        if (set.transitState === resultState) {
-          set.startState = true;
+        if (set.transitState === state) {
+          set.startState = true; // this start state basically indicates as to what node/state the transition should use
           result.push(set);
         } else {
           set.startState = false;
@@ -393,169 +323,119 @@ export const MainProvider = ({children}) => {
     })
     return result;
   }
-  const [isAccepted, setIsAccepted] = useState(false);
 
-  const findEpsilonState = (result, value) => {
-    console.log(`Value ${value}`)
-    const {transitionSets} = fa;
-    // let result = [];
-    transitionSets.forEach(tr => {
-      tr.filter(set => set.transitState === value).forEach(set => {
-        if (set.transitResult.length > 0 && set.transitAlphabet === '$') {
-          console.log('Epsilon State')
-          console.log(set)
-          result.push(set.transitResult[0])
+
+  let newStates = [getStartState()]; // initial node to start from, used for validating nfa only
+  let containEps = false; // to check whether one of the state's row contain an epsilon transition
+
+  const validateNFA = (string, resultState /*state after iteration*/) => {
+    let tmpString = string; // variable to hold string
+    let result = resultState; // state after iteration
+    // Recursion base case
+    if (tmpString.length === 0 && !containEps) {
+      newStates = [findState(fa.faStartState)] // set the initial state back to the original start state after finished validating
+      // check if one of the final results is of the Final States set
+      result.every(res => {
+        if (fa.faFinalStates.includes(res)) {
+          setIsAccepted(fa.faFinalStates.includes(res))
+          return false;
         }
+        return true;
       })
-    })
-  }
+      result = []
+      return;
+    }
 
-  let newStates = [getStartState()];
-  let iter = 1;
-  let containEps = false;
-  const validateNFA = (string, resultState) => {
-    let tmpString = string;
-    let result = resultState;
-    console.log(`----------------------------------------------`)
-    console.log(`Iteration ${iter} ----------------------------`)
-    console.log(`computing string ${tmpString}`)
-    // console.log('Start State')
-    // console.log(newStates)
     setError({...error, stringError: ''})
+
+    // verify if FA has final states
     if (fa.faFinalStates.length <= 0) {
       setError({...error, stringError: 'Missing Final States'});
       return;
     }
-    if (tmpString.length === 0 && !containEps) {
-      console.log('End')
-      console.log(result)
-      newStates = [findState(fa.faStartState)]
-      result.forEach(res => {
-        if (fa.faFinalStates.includes(res)) {
-          setIsAccepted(fa.faFinalStates.includes(res))
-        }
-      })
-      result = [];
-      console.log(`---------------------------------------------- Total iteration: ${iter}`)
-      return;
-    }
 
-    if (!checkString()) {
+    if (!checkString()) { // verify if string is valid and is of alphabet set
       setError({...error, stringError: 'Some input alphabets are not included in your alphabet set'})
       setIsAccepted(false);
     } else {
+      // algorithm from here
       containEps = false;
-      console.log(`Computing character: ${tmpString[0]}`)
-      console.log('Start State: ')
-      console.log(newStates)
-      iter++; // keep track of iteration
-      // set resulting states
+
       result = []
 
-      // console.log('Check current row EPS');
-      // newStates.forEach(ns => {
-      //   ns.forEach(ns => {
-      //     if(ns.transitAlphabet === '$') {
-      //       console.log(ns);
-      //       ns.transitResult.forEach(res => {
-      //         console.log(`Result of epsilon transition: ${res}`);
-      //         result.push(res)
-      //       })
-      //     }
-      //   })
-      // })
-
-      // newStates.forEach(state => state.filter(st => st.transitAlphabet === tmpString[0])[0].transitResult.forEach(res => {
-      //   if (!result.includes(res)) {
-      //     result.push(res)
-      //     console.log(`Result of first iteration: ${res}`)
-      //   }
-      // }))
-
-      // newStates.forEach(state => state.forEach(st => {
-      //   if(st.transitAlphabet === tmpString[0] || st.transitAlphabet === '$') {
-      //     console.log(st)
-      //     st.transitResult.forEach(res => {
-      //       tmpArr.push(res)
-      //     })
-      //   }
-      // }))
-      // console.log('Tmp Array: ')
-      // console.log(tmpArr)
-
-      // the start state
+      // loop to get resulting states after each transition by using the initial state
       newStates.forEach(state => state.forEach(st => {
-        if(st.transitAlphabet === tmpString[0]) {
+        // push resulting state according to input string
+        if (st.transitAlphabet === tmpString[0]) {
           st.transitResult.forEach(res => {
-            result.push(res)
+            if (!result.includes(res)) {
+              result.push(res)
+            }
           })
         }
-        if(st.transitAlphabet === '$') {
-          console.log(`State ${st.transitState} has epsilon`)
-          containEps = true;
+        // if state has epsilon transition, add that transition result
+        if (st.transitAlphabet === '$' && st.transitResult.length > 0) {
           st.transitResult.forEach(res => {
-            result.push(res)
+            containEps = true;
+            if (!result.includes(res)) {
+              result.push(res)
+            }
           })
         }
       }))
 
-      console.log(`Contain EPS?: ${containEps}`)
+      // check for any epsilon transitions after first iteration
+      // this block only runs if the resulting states from the first iteration
+      // does not contain any epsilon transition
+      if (!containEps) {
+        // update the initial state as the state obtained from the first iteration
+        result.forEach(res => {
+          newStates.push(findState(res))
+        })
+        // find if those states has epsilon transition
+        newStates.forEach(st => {
+          st.forEach(set => {
+            if (set.transitAlphabet === '$' && set.transitResult.length > 0) {
+              set.transitResult.forEach(res => {
+                containEps = true;
+                if (!result.includes(res)) {
+                  result.push(res)
+                }
+              })
+            }
+          })
+        })
+        // this block runs if it contains the transition
+        if (containEps) {
+          newStates = []
+          result.forEach(res => {
+            newStates.push(findState(res))
+          })
+          validateNFA(tmpString, result)
+        }
+      }
 
-      console.log('After first Iteration')
-      console.log(result)
-
-      // result.forEach(res => {
-      //   newStates.push(findState(res));
-      // })
-
-      // // find if state has epsilon
-      // console.log('Find epsilon with these states')
-      // console.log(newStates)
-
-      // newStates.every(st => {
-      //   if (st.some(set => set.transitAlphabet === '$' && set.transitResult.length > 0)) {
-      //     containEps = true;
-      //     st.filter(set => set.transitAlphabet === '$' && set.transitResult.length > 0).every(set => {
-      //       console.log(set)
-      //       set.transitResult.forEach(res => {
-      //         console.log(res)
-      //         if (!result.includes(res))
-      //           result.push(res) // push epsilon transition
-      //       })
-      //       return true;
-      //     })
-      //   }
-      //   return true;
-      // })
-
-      // slice 1 char at head of string
+      // slice 1 char at head of string since we've already computed that character
       tmpString = tmpString.slice(1);
-      console.log(`Slice: ${tmpString}`)
-      console.log(`Length: ${tmpString.length}`)
 
+      // runs if the first iteration has an epsilon transition
       if (containEps) {
-        console.log('First Result (EPS): ')
-        console.log(result);
         newStates = []
-        // push result states as new start state
+        // push the resulting states as new start state
         result.forEach(res => {
           newStates.push(findState(res));
         })
-        console.log('New Start State: ')
-        console.log(newStates)
-        validateNFA(tmpString, newStates)
+        // validateNFA(tmpString, newStates)
+        validateNFA(tmpString, result)
       }
 
-      console.log('No EPS')
+      // will run if the resulting state after the iteration has no epsilon transition
       newStates = []
 
       // push resulting state as starting state
       result.forEach(res => {
         newStates.push(findState(res))
       })
-
-      console.log('Last Result: ')
-      console.log(result)
       validateNFA(tmpString, result)
     }
   }
@@ -567,27 +447,28 @@ export const MainProvider = ({children}) => {
       return;
     }
 
-    if (!checkString()) {
+    if (!checkString()) { // verify if string is valid and is of alphabet set
       setError({...error, stringError: 'Some input alphabets are not included in your alphabet set'})
       setIsAccepted(false);
     } else {
       let i = 0;
-      let newState = getStartState();
+      let newState = getStartState(); // set the initial state as the start state
       let result;
 
+      // loops until there's no characters left
       while (i <= inputString.length - 1) {
-        // check if string alphabet is in start state set
+        // check if input is in the start state
         if (newState.some(set => set.transitAlphabet === inputString[i])) {
-          // set result state
+          // store the resulting state after the transition
           result = newState.find(set => set.transitAlphabet === inputString[i])
-          // change start state
+          // update start state values
           newState.forEach(set => set.startState = false)
         }
-        // set new start state
+        // set the new start state value as the result state
         newState = findState(result.transitResult[0])
         i++;
       }
-      // reset state back to original start state
+      // reset state back to original start state when finished computing
       newState = findState(fa.faStartState);
       setIsAccepted(fa.faFinalStates.includes(result.transitResult[0]))
     }
@@ -618,14 +499,10 @@ export const MainProvider = ({children}) => {
     validateDFA,
     epsilonCheck,
     setEpsilonCheck,
-    trapCheck,
-    setTrapCheck,
     nfa,
     setNfa,
-    adjustTrap,
     setRows,
     setCols,
-    // handleDfaTransition,
     adjustEpsilon,
     error,
     setError,

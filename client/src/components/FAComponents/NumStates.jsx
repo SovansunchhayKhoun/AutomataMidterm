@@ -2,7 +2,7 @@ import React, {useContext} from 'react'
 import {MainContext} from '../../context/MainContext'
 
 export const NumStates = () => {
-  const {nfa, fa, trapCheck, generateStates, error, adjustTrap} = useContext(MainContext);
+  const {fa, generateStates, error} = useContext(MainContext);
   const {faStates} = fa;
   return (
     <div
@@ -25,16 +25,6 @@ export const NumStates = () => {
           return <span key={key}>{fs}{faStates.length - 1 !== key && ', '}</span>
         })} ]
         </div>
-        {faStates?.length > 0 && (
-          <div className='flex items-center gap-1'>
-            <input
-              className="border-2 border-blue-500"
-              checked={trapCheck} type="checkbox" onChange={(event) => {
-              !nfa && adjustTrap(nfa, event)
-            }}/>
-            Include trap?
-          </div>
-        )}
       </div>
       <div>
         <span className={`${error ? 'text-red-500 text-xs' : 'hidden'}`}>{error && error.nfaError}</span>

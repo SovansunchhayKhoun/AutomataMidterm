@@ -6,8 +6,7 @@ import {NumAlphabets} from "../components/FAComponents/NumAlphabets.jsx";
 import {StartState} from "../components/FAComponents/StartState.jsx";
 import {FinalStates} from "../components/FAComponents/FinalStates.jsx";
 import {UtilContext} from "../context/UtilContext.jsx";
-import {DFATransitionTable} from "../components/FAComponents/DFATransitionTable.jsx";
-import {NFATransitionTable} from "../components/FAComponents/NFATransitionTable.jsx";
+import {TransitionTable} from "../components/FAComponents/TransitionTable.jsx";
 
 export const ValidateString = () => {
   const {setNavBarSelect} = useContext(UtilContext);
@@ -19,7 +18,6 @@ export const ValidateString = () => {
   })
 
   const {nfa, error, handleString, inputString, validateDFA, validateNFA, isAccepted} = useContext(MainContext);
-
   const [showTable, setShowTable] = useState(false);
   const [showFa, setShowFa] = useState(false);
   return (<main className={'flex flex-col w-full gap-4'}>
@@ -32,9 +30,13 @@ export const ValidateString = () => {
               <input className={'py-1'} ref={inputStringRef} onKeyDown={({key}) => {
                 key === 'Enter' && (nfa ? validateNFA(inputString, []) : validateDFA())
               }} value={inputString} onChange={handleString} type="text" placeholder='Enter string...'/>
-              <span className={`${!error.stringError && 'hidden'} text-red-500 text-xs`}>{error && error.stringError}</span>
+              <span
+                className={`${!error.stringError && 'hidden'} text-red-500 text-xs`}>{error && error.stringError}</span>
             </div>
-            <button onClick={event => {nfa ? validateNFA(inputString, []) : validateDFA()}} className={'bg-blue-300 text-blue-500 px-6 py-1 rounded-md'}>submit</button>
+            <button onClick={event => {
+              nfa ? validateNFA(inputString, []) : validateDFA()
+            }} className={'bg-blue-300 text-blue-500 px-6 py-1 rounded-md'}>submit
+            </button>
           </div>
         </div>
         {inputString.length > 0 && (
@@ -62,7 +64,7 @@ export const ValidateString = () => {
             Toggle FA set
           </button>
         </div>
-        {showTable && (nfa ? <NFATransitionTable/> : <DFATransitionTable/>)}
+        {showTable && <TransitionTable/>}
       </div>
       {showFa && <div className={'grid grid-cols-4 gap-4 w-full'}>
         <NumStates/>
