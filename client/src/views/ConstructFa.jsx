@@ -1,18 +1,14 @@
 import React, {useContext, useEffect, useRef} from 'react'
 import {MainContext} from '../context/MainContext'
-import {DFATransitionTable} from '../components/FAComponents/DFATransitionTable.jsx';
 import {NumStates} from '../components/FAComponents/NumStates';
 import {NumAlphabets} from '../components/FAComponents/NumAlphabets';
 import {StartState} from '../components/FAComponents/StartState';
 import {FinalStates} from '../components/FAComponents/FinalStates';
 import {TransitionDiagram} from "../components/FAComponents/TransitionDiagram.jsx";
-import {NFATransitionTable} from "../components/FAComponents/NFATransitionTable.jsx";
-import {useNavigate} from "react-router-dom";
+import {TransitionTable} from "../components/FAComponents/TransitionTable.jsx";
 
 export const ConstructFa = () => {
-  const {submitForm, nfa} = useContext(MainContext);
-  let navigate = useNavigate();
-  const stateRef = useRef(null);
+  const {submitForm} = useContext(MainContext);
 
   return (
     <main className='flex flex-col gap-4'>
@@ -31,12 +27,23 @@ export const ConstructFa = () => {
 
               {/* get final state */}
               <FinalStates/>
+
             </div>
           </div>
+          {/*<div className={'flex justify-center w-full'}>*/}
+          {/*  <div>*/}
+          {/*    Sample <br/>*/}
+          {/*    Correct String: aba <br/>*/}
+          {/*    Final State: q3, Start state: q0*/}
+          {/*  </div>*/}
+          {/*  <img className={'object-contain'} src={Sample} alt="sample-exercise" loading={"lazy"}/>*/}
+          {/*  <img className={'object-contain'} src={Sample2} alt="sample-exercise" loading={"lazy"}/>*/}
+          {/*</div>*/}
           {/* generate transition table */}
           <div className={"flex flex-col gap-4 w-full"}>
-            {nfa ? <NFATransitionTable/> : <DFATransitionTable/>}
-              <TransitionDiagram/>
+            <TransitionTable/>
+            {/*{nfa ?  : <DFATransitionTable/>}*/}
+            <TransitionDiagram/>
           </div>
         </div>
       </section>
