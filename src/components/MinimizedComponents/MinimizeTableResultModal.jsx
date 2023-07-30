@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { MinimizedContext } from "../../context/MinimizedContext";
-import { MinimizedTable } from "./MinimizeTable";
+import { MinimizedTable } from "./MinimizeTable.jsx";
 
 export const MinimizedTableResulModal = () => {
   const { showModal, setShowModal } = useContext(MinimizedContext);
