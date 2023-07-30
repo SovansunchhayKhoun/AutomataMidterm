@@ -8,11 +8,11 @@ export const NavBar = () => {
   const navigate = useNavigate();
 
   const navLinks = [
-    {title: "Construct FA", to: "/"},
-    {title: "Classify FA", to: "/classify"},
-    {title: "Validate String", to: "/validate"},
-    {title: "Convert from NFA to DFA", to: "/"},
-    {title: "Minimize DFA", to: "/minimized"},
+    {title: "Construct FA", to: "/AutomataMidterm/"},
+    {title: "Classify FA", to: "/AutomataMidterm/classify"},
+    {title: "Validate String", to: "/AutomataMidterm/validate"},
+    // {title: "Convert from NFA to DFA", to: "/"},
+    {title: "Minimize DFA", to: "/AutomataMidterm/minimized"},
   ]
 
   return (

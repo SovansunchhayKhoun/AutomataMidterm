@@ -5,7 +5,7 @@ export const ErrorPage = () => {
   return (
     <div>
       <p>An error has occurred</p>
-      <a href="/">Back home</a>
+      <a href="/AutomataMidterm/">Back home</a>
     </div>
   )
 }
