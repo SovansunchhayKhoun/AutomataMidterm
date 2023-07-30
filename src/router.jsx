@@ -14,22 +14,22 @@ const router = createBrowserRouter([
     element: <Layout/>,
     children: [
       {
-        path: '',
+        path: '/AutomataMidterm/',
         element: <ConstructFa /> ,
         errorElement: <ErrorPage />
       },
       {
-        path: '/minimized',
+        path: '/AutomataMidterm/minimized',
         element: <MinimizedDfa/> ,
         errorElement: <ErrorPage />
       },
       {
-        path: '/classify',
+        path: '/AutomataMidterm/classify',
         element: <Classify />,
         errorElement: <ErrorPage />
       },
       {
-        path: '/validate',
+        path: '/AutomataMidterm/validate',
         element: <ValidateString />,
         errorElement: <ErrorPage />
       },
