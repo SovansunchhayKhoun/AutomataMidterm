@@ -99,7 +99,6 @@ export const MinimizedDfa = () => {
                             key={key}>
                             {" "}
                         {fa}
-                        {alphabets.length - 1 !== key && ", "}
                           </span>
                     );
                   })}
@@ -130,7 +129,8 @@ export const MinimizedDfa = () => {
                           );
                         })}
                       </div>
-                      <div className={'w-[50%] whitespace-nowrap py-0.5 text-center text-blue-600 font-semibold text-sm rounded-[20px] bg-blue-300'}>
+                      <div
+                        className={'w-[50%] whitespace-nowrap py-0.5 text-center text-blue-600 font-semibold text-sm rounded-[20px] bg-blue-300'}>
                         {dfa.startState[0]}
                       </div>
                     </div>
@@ -162,7 +162,9 @@ export const MinimizedDfa = () => {
                       </div>
                       <div className={'w-full grid grid-cols-4 gap-4'}>
                         {dfa.finalStates?.map((finalState, key) => (
-                          <span className={'whitespace-nowrap py-0.5 text-center text-blue-600 font-semibold text-sm rounded-[20px] bg-blue-300'} key={key}>
+                          <span
+                            className={'whitespace-nowrap py-0.5 text-center text-blue-600 font-semibold text-sm rounded-[20px] bg-blue-300'}
+                            key={key}>
                             {finalState}
                           </span>
                         ))}

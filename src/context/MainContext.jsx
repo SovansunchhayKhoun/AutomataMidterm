@@ -88,11 +88,6 @@ export const MainProvider = ({children}) => {
         })
       }
     }
-    // else if (Number(event.target.value) >= 6) {
-    //   setError({...error, stateError: 'Cannot exceed 5 states'})
-    //   clearFaState();
-    //   clearTransition();
-    // }
   }
 
   const adjustEpsilon = () => {
@@ -174,6 +169,7 @@ export const MainProvider = ({children}) => {
     }
   }
 
+     
   const handleStartState = (value) => {
     const {transitionSets} = fa;
     // update start state value
@@ -483,12 +479,15 @@ export const MainProvider = ({children}) => {
 
   const submitForm = () => {
     const {faStates, faAlphabets, faStartState, faFinalStates, transitionSets} = fa;
-    console.log("Start state: ")
-    console.log(faStartState)
+
+    console.log(getStartState())
+
     console.log("States set: ")
     console.log(faStates)
     console.log("Alphabets set: ")
     console.log(faAlphabets)
+    console.log("Start state: ")
+    console.log(faStartState)
     console.log("Transitions set: ")
     console.log(transitionSets)
     console.log("Final states: ")
