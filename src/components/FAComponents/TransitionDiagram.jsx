@@ -15,16 +15,15 @@ export const TransitionDiagram = () => {
                    className={'h-full p-4 w-full flex flex-col border-blue-500 border-2 rounded-tl-md rounded-tr-md gap-2'}>
                 {set.map((s, key) => {
                   return (
-                    <div key={key} className={'w-fit text-white bg-blue-950 px-2 py-1 rounded-md'}>
+                    <div key={key} className={'w-fit text-white bg-blue-950 text-center px-2 py-1 rounded-md'}>
+                      {s.startState && <span className={'text-xs text-center'}>Start state <br/></span>}
+                      {s.finalState && <span className={'text-xs text-center'}>Final State <br/></span>}
                       {s.transitState}&nbsp; -&gt; &nbsp;
                       {s.transitAlphabet}&nbsp;
                       =&nbsp;{s.transitResult.map((res, key) => (
                       <span key={key}>{res}{s.transitResult.length - 1 !== key && ', '}</span>)
                     )
                     }
-                      <br/>
-                      {s.startState && `SS: ${s.startState}`}
-                      {s.finalState && `FS: ${s.finalState}`}
                     </div>
                   )
                 })}

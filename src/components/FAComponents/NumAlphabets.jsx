@@ -16,23 +16,21 @@ export const NumAlphabets = () => {
           onChange={event => {
             generateAlphabets(event)
           }}
-          value={faAlphabets.length || 0}
-          min="0"
-          max="5"
+          value={faAlphabets.length}
           className="border-2 border-blue-500 px-2 py-1 w-full"
           type="number" id="alphabet" placeholder='Number of Alphabets'/>
       </label>
       <div className='flex flex-col gap-2'>
-        <div>
-          Your Alphabets: [ {faAlphabets?.map((fa, key) => {
-          return <span key={key}> {fa}{faAlphabets.length - 1 !== key && ', '}</span>
-        })} ]
+        <div className={'grid grid-cols-4 gap-4'}>
+          {faAlphabets?.map((fa, key) => {
+          return <span className={'text-center text-gray-950 font-semibold text-sm rounded-[20px] bg-gray-400'} key={key}> {fa}</span>
+        })}
         </div>
         {faAlphabets.length > 0 && (
           <div className='flex gap-1 items-center'>
             <input checked={epsilonCheck} onChange={(event) => adjustEpsilon(event)}
                    className='border-2 border-blue-500' type="checkbox"/>
-            <label htmlFor="">Include Epsilon?</label>
+            <label className={'text-gray-500 text-sm'} htmlFor="">Include Epsilon? <span className={'font-semibold'}>($)</span></label>
           </div>
         )}
       </div>

@@ -11,24 +11,19 @@ export const NumStates = () => {
       <label className={"flex gap-1 items-center"} htmlFor="state">
         <span>State:</span>
         <input
-          value={faStates.length || 0}
           min={"0"} type="number" required
-          max={"5"}
           onChange={event => {
             generateStates(event)
           }}
+          value={faStates.length}
           className="border-2 border-blue-500 px-2 py-1 w-full" id="state" placeholder='Number of States...'/>
       </label>
       <div className='flex flex-col gap-2'>
-        <div>
-          Your States [ {faStates?.map((fs, key) => {
-          return <span key={key}>{fs}{faStates.length - 1 !== key && ', '}</span>
-        })} ]
+        <div className={'grid grid-cols-4 gap-4'}>
+          {faStates?.map((fs, key) => {
+            return <span key={key} className={'text-center text-blue-600 font-semibold text-sm rounded-[20px] bg-blue-300'}>{fs}</span>
+          })}
         </div>
-      </div>
-      <div>
-        <span className={`${error ? 'text-red-500 text-xs' : 'hidden'}`}>{error && error.nfaError}</span>
-        <span className={`${error ? 'text-red-500 text-xs' : 'hidden'}`}>{error && error.stateError}</span>
       </div>
     </div>
   )

@@ -29,9 +29,10 @@ export const MainProvider = ({children}) => {
   const [inputString, setInputString] = useState('');
 
   const clearFaState = () => {
-    setFa({
-      ...fa, faStates: [], faStartStates: [], faFinalStates: []
-    });
+    fa.faStates = [];
+    fa.faStartState = '';
+    fa.faFinalStates = [];
+    setFa({...fa});
   }
 
   const clearTransition = () => {
@@ -59,8 +60,8 @@ export const MainProvider = ({children}) => {
       setRows(0);
       clearFaState();
     }
-
-    if (Number(event.target.value) > 0 && Number(event.target.value) <= 5) {
+    // if (Number(event.target.value) > 0 && Number(event.target.value) <= 5) {
+    if (Number(event.target.value) > 0) {
       setRows(Number(event.target.value));
       // set rows and columns
       for (let i = 0; i < Number(event.target.value); i++) {
@@ -83,11 +84,12 @@ export const MainProvider = ({children}) => {
           ...fa, faStartState: `q0`, // set a default value for start state
         })
       }
-    } else if (Number(event.target.value) >= 6) {
-      setError({...error, stateError: 'Cannot exceed 5 states'})
-      clearFaState();
-      clearTransition();
     }
+    // else if (Number(event.target.value) >= 6) {
+    //   setError({...error, stateError: 'Cannot exceed 5 states'})
+    //   clearFaState();
+    //   clearTransition();
+    // }
   }
 
   const adjustEpsilon = () => {
@@ -126,7 +128,8 @@ export const MainProvider = ({children}) => {
   const clearFaAlphabets = () => {
     setEpsilonCheck(false);
     setNfa(false)
-    setFa({...fa, faAlphabets: []});
+    fa.faAlphabets = []
+    setFa({...fa});
   }
 
   const generateAlphabets = (event) => {
@@ -134,17 +137,18 @@ export const MainProvider = ({children}) => {
     // to reinitialize alphabets and transition every time the number of alphabets changes
     clearFaAlphabets();
     clearTransition();
-
+    setFa({...fa})
     // if 0 clear alphabets
     if (Number(event.target.value) <= 0) {
       setCols(0);
       clearFaAlphabets();
     }
 
-    if (Number(event.target.value) > 0 && Number(event.target.value) <= 5) {
+    // if (Number(event.target.value) > 0 && Number(event.target.value) <= 5) {
+    if (Number(event.target.value) > 0 && Number(event.target.value) <= 26) {
       setCols(Number(event.target.value));
 
-      for (let i = 0; i < event.target.value; i++) {
+      for (let i = 0; i < Number(event.target.value); i++) {
         // insert new alphabets
         fa.faAlphabets.push(String.fromCharCode(i + 97)) // convert from integer to character
         // update default transition values
@@ -160,9 +164,9 @@ export const MainProvider = ({children}) => {
         // update state
         setFa({...fa});
       }
-    } else if (Number(event.target.value) >= 6) {
-      setError({...error, alphabetError: 'Cannot exceed 5 alphabets'})
-      clearFaAlphabets(event)
+    } else if (Number(event.target.value) >= 27) {
+      setError({...error, alphabetError: 'Cannot exceed 26 alphabets'})
+      clearFaAlphabets()
       clearTransition()
     }
   }
