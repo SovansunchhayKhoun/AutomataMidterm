@@ -30,7 +30,7 @@ export const MainProvider = ({children}) => {
 
   const clearFaState = () => {
     fa.faStates = [];
-    fa.faStartState = '';
+    fa.faStartState = 'q0';
     fa.faFinalStates = [];
     setFa({...fa});
   }
