@@ -4,11 +4,11 @@ export const MinimizedContext = createContext();
 export const MinimizedProvider = ({ children }) => {
   const [states, setStates] = useState([]);
   const [alphabets, setAlphabets] = useState([]);
+  let newStates = []
   const [transitionTable, setTransitionTable] = useState(
     Array.from({ length: 1 }, () => Array.from({ length: 1 }, () => "q0"))
   );
-  const transitions = [];
-  let inaccessibleState = [];
+  let transitions = [];
   const initializeTransitionTable = (row, column, value = "q0") => {
     setTransitionTable(
       Array.from({ length: row }, () =>
@@ -109,33 +109,58 @@ export const MinimizedProvider = ({ children }) => {
 
   //find the state that cannot access from start state
   const findInaccessibleState = () => {
-    while (inaccessibleState.length > 0) {
-      inaccessibleState.pop();
+    while(newStates.length>0){
+      newStates.pop()
     }
-    //state
+    let inaccessibleState = []
     let i = 0;
     let j, k;
     while (i < states.length) {
       //row
-      for (j = 0; j < states.length; j++) {
-        //column
-        for (k = 0; k < alphabets.length; k++) {
-          if (states[i] == transitionTable[j][k]) {
-            console.log(
-              `state: ${states[i]} transitions: ${alphabets[k]} result: ${transitionTable[j][k]}`
-            );
-            j = states.length;
-            break;
+      if(!dfa.startState.includes(states[i])){
+        for (j = 0; j < transitions.length; j++) {
+          //column
+          if(states[i] !== transitions[j].state){
+            for (k = 0; k < alphabets.length; k++) {
+              if (states[i] == transitions[j].transition[k]) {
+                j = states.length;
+                break;
+              }
+            }
           }
+          
         }
-      }
-      if (j === states.length && k === alphabets.length) {
-        console.log(states[i]);
-        inaccessibleState.push(states[i]);
+        if (j === states.length && k === alphabets.length) {
+          // console.log(states[i]);
+          inaccessibleState.push(states[i]);
+        }
       }
       i++;
     }
-    console.log(inaccessibleState);
+    
+    let tempTransition = []
+
+    transitions.map((element) => {
+      if(!inaccessibleState.includes(element.state)){
+        tempTransition.push(element)
+      }
+    })
+    transitions = tempTransition
+
+
+    let tempState = []
+    states.map((state) => {
+      
+      if(!inaccessibleState.includes(state)){
+        tempState.push(state)
+      }
+    })
+    setStates(tempState)
+    newStates = tempState
+    console.log('Inaccesssible state: ')
+    console.log(inaccessibleState)
+    console.log('New transition: ')
+    console.log(transitions)
   };
 
   //state pairs that are marked (if one is final state and another is not then it is marked)
@@ -152,11 +177,11 @@ export const MinimizedProvider = ({ children }) => {
     while (DfaPairs.length > 0) {
       DfaPairs.pop();
     }
-    for (let i = 0; i < states.length; i++) {
-      for (let j = 1; j < states.length; j++) {
-        if (states[i] !== states[j] && i !== j) {
-          if (!checkIfExist(DfaPairs, states[i], states[j])) {
-            DfaPairs.push([states[i], states[j]]);
+    for (let i = 0; i < newStates.length; i++) {
+      for (let j = 1; j < newStates.length; j++) {
+        if (newStates[i] !== newStates[j] && i !== j) {
+          if (!checkIfExist(DfaPairs, newStates[i], newStates[j])) {
+            DfaPairs.push([newStates[i], newStates[j]]);
           }
         }
       }
@@ -176,7 +201,6 @@ export const MinimizedProvider = ({ children }) => {
   function findTransistion(state, alphabet) {
     return transitions.find((x) => x.state === state).transition[`${alphabet}`];
   }
-
 
   function clearUnmarkedPair() {
     while (unmarkedPairs.length > 0) {
@@ -241,6 +265,9 @@ export const MinimizedProvider = ({ children }) => {
   }
 
   const minimizedDfa = () => {
+    //find inaccessible state and remove from the transition table
+    findInaccessibleState()
+
     //Generate all possible pair of states
     generateDfaPairs();
 
@@ -271,13 +298,13 @@ export const MinimizedProvider = ({ children }) => {
 
     let i = 0;
     let equivalenceStates = [];
-    while (i < states.length) {
+    while (i < newStates.length) {
       let j = 0;
-      if (!equivalenceStates.includes(states[i])) {
+      if (!equivalenceStates.includes(newStates[i])) {
         for (j = 0; j < unmarkedPairs.length; j++) {
           if (
-            states[i] === unmarkedPairs[j][0] ||
-            states[i] === unmarkedPairs[j][1]
+            newStates[i] === unmarkedPairs[j][0] ||
+            newStates[i] === unmarkedPairs[j][1]
           ) {
             break;
           }
@@ -285,10 +312,10 @@ export const MinimizedProvider = ({ children }) => {
         if (j === unmarkedPairs.length) {
           let transition = [];
           for (let k = 0; k < alphabets.length; k++) {
-            transition.push(findTransistion(states[i], k));
+            transition.push(findTransistion(newStates[i], k));
           }
           let temp = {
-            state: states[i],
+            state: newStates[i],
             transitionTable: transition,
           };
           minimizedTransistionTable.push(temp);
@@ -311,36 +338,36 @@ export const MinimizedProvider = ({ children }) => {
     //   ['q4', 'q5'],
     // ]
 
-    let result = []
+    let result = [];
 
-    let index = 0
-    while(index<equivalenceStates.length){
-      let isCheck = false
-      for(let i = 0;i<result.length;i++){
-        if(result[i].includes(equivalenceStates[index])){
-          isCheck = true
-          break
+    let index = 0;
+    while (index < equivalenceStates.length) {
+      let isCheck = false;
+      for (let i = 0; i < result.length; i++) {
+        if (result[i].includes(equivalenceStates[index])) {
+          isCheck = true;
+          break;
         }
       }
-      if(!isCheck){
-        let tmp = []
-        for(let i=0;i<unmarkedPairs.length;i++){
-          if(unmarkedPairs[i].includes(equivalenceStates[index])){
-            for(let j = 0 ;j<2;j++){
-              if(!tmp.includes(unmarkedPairs[i][j])){
-                tmp.push(unmarkedPairs[i][j])
+      if (!isCheck) {
+        let tmp = [];
+        for (let i = 0; i < unmarkedPairs.length; i++) {
+          if (unmarkedPairs[i].includes(equivalenceStates[index])) {
+            for (let j = 0; j < 2; j++) {
+              if (!tmp.includes(unmarkedPairs[i][j])) {
+                tmp.push(unmarkedPairs[i][j]);
               }
             }
           }
         }
-        result.push(tmp)
+        result.push(tmp);
       }
-      index++
+      index++;
     }
-    
+
     //insert all to the new table
-    
-    for(let i = 0;i<result.length;i++){
+
+    for (let i = 0; i < result.length; i++) {
       let transition = [];
       for (let k = 0; k < alphabets.length; k++) {
         transition.push(findTransistion(result[i][0], k));
@@ -351,21 +378,17 @@ export const MinimizedProvider = ({ children }) => {
       };
       minimizedTransistionTable.push(temp);
     }
-    
-
-    
   };
-  
 
   const handleSubmit = () => {
     console.log("DFA: ");
     console.log(dfa);
     handleTransitions();
     minimizedDfa();
+    console.log('After minimized: ')
     console.log(minimizedTransistionTable)
+  
   };
-
- 
 
   const handleFinalState = (event) => {
     const { value, checked } = event.target;
@@ -384,6 +407,7 @@ export const MinimizedProvider = ({ children }) => {
   return (
     <MinimizedContext.Provider
       value={{
+        newStates,
         states,
         setStates,
         alphabets,
@@ -402,7 +426,7 @@ export const MinimizedProvider = ({ children }) => {
         handleSubmit,
         handleTransitions,
         findInaccessibleState,
-        minimizedTransistionTable
+        minimizedTransistionTable,
       }}
     >
       {children}

@@ -167,7 +167,6 @@ export const MinimizedDfa = () => {
         <button
           onClick={() => {
             handleSubmit()
-            setIsHidden(true)
           }}
         >
           Submit
