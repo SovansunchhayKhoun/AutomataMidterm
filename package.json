@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "homepage": "https://sovansunchhaykhoun.github.io/AutomataMidterm",
+  "homepage": "https://sovansunchhaykhoun.github.io/AutomataMidterm/",
   "scripts": {
     "dev": "vite --port=3000",
     "predeploy": "npm run build",
