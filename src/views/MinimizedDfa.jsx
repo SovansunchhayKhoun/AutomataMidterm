@@ -164,7 +164,6 @@ export const MinimizedDfa = () => {
                         {dfa.finalStates?.map((finalState, key) => (
                           <span className={'whitespace-nowrap py-0.5 text-center text-blue-600 font-semibold text-sm rounded-[20px] bg-blue-300'} key={key}>
                             {finalState}
-                            {dfa.finalStates.length - 1 !== key && ", "}
                           </span>
                         ))}
                       </div>
