@@ -31,6 +31,9 @@ export const MainProvider = ({children}) => {
       }
     })),
   });
+
+
+  
   const [inputString, setInputString] = useState('');
   const [trapCheck, setTrapCheck] = useState(false);
 
