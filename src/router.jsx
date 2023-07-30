@@ -10,7 +10,7 @@ import { ValidateString } from "./views/ValidateString"
 
 const router = createBrowserRouter([
   {
-    path: '/',
+    path: '/AutomataMidterm/',
     element: <Layout/>,
     children: [
       {
