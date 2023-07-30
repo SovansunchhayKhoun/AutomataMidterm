@@ -26,6 +26,9 @@ export const MainProvider = ({children}) => {
       }
     })),
   });
+
+
+  
   const [inputString, setInputString] = useState('');
 
   const clearFaState = () => {

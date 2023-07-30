@@ -2,16 +2,35 @@ import React, { createContext, useEffect, useState } from "react";
 
 export const MinimizedContext = createContext();
 export const MinimizedProvider = ({ children }) => {
+  //states
   const [states, setStates] = useState([]);
+  //alphabets
   const [alphabets, setAlphabets] = useState([]);
-  const [showModal,setShowModal] = useState(false)
-  let newStates = []
-  const [minimizedResult,setMinimizeResult] = useState()
-  const [error,setError] = useState({})
+
   const [transitionTable, setTransitionTable] = useState(
     Array.from({ length: 1 }, () => Array.from({ length: 1 }, () => "q0"))
   );
+
+  //dfa components
+  const [dfa, setDfa] = useState({
+    states: states,
+    alphabets: alphabets,
+    startState: [],
+    finalStates: [],
+    amountState: states.length,
+    amountAlphabet: alphabets.length,
+    transitions: transitionTable,
+  });
+
+  const [error, setError] = useState({});
+  let newStates = [];
   let transitions = [];
+
+  const [showModal, setShowModal] = useState(false);
+
+  //minimized Result
+  const [minimizedResult, setMinimizeResult] = useState();
+
   const initializeTransitionTable = (row, column, value = "q0") => {
     setTransitionTable(
       Array.from({ length: row }, () =>
@@ -35,16 +54,7 @@ export const MinimizedProvider = ({ children }) => {
     setTransitionTable(copy);
     setDfa({ ...dfa, transitions: copy });
   };
-  //dfa components
-  const [dfa, setDfa] = useState({
-    states: states,
-    alphabets: alphabets,
-    startState: [],
-    finalStates: [],
-    amountState: states.length,
-    amountAlphabet: alphabets.length,
-    transitions: transitionTable,
-  });
+
   const generateStates = (amountState = 1) => {
     //clear all states from the array
     while (states.length > 0) {
@@ -81,12 +91,12 @@ export const MinimizedProvider = ({ children }) => {
   };
 
   const handleStartState = (event) => {
-    dfa.startState.pop()
+    dfa.startState.pop();
     const { value } = event.target;
-      if (!dfa.startState.includes(value)) {
-        dfa.startState.push(value);
-      }
-    
+    if (!dfa.startState.includes(value)) {
+      dfa.startState.push(value);
+    }
+
     setDfa({ ...dfa });
   };
 
@@ -106,18 +116,18 @@ export const MinimizedProvider = ({ children }) => {
 
   //find the state that cannot access from start state
   const findInaccessibleState = () => {
-    while(newStates.length>0){
-      newStates.pop()
+    while (newStates.length > 0) {
+      newStates.pop();
     }
-    let inaccessibleState = []
+    let inaccessibleState = [];
     let i = 0;
     let j, k;
     while (i < states.length) {
       //row
-      if(!dfa.startState.includes(states[i])){
+      if (!dfa.startState.includes(states[i])) {
         for (j = 0; j < transitions.length; j++) {
           //column
-          if(states[i] !== transitions[j].state){
+          if (states[i] !== transitions[j].state) {
             for (k = 0; k < alphabets.length; k++) {
               if (states[i] == transitions[j].transition[k]) {
                 j = states.length;
@@ -125,7 +135,6 @@ export const MinimizedProvider = ({ children }) => {
               }
             }
           }
-          
         }
         if (j === states.length && k === alphabets.length) {
           // console.log(states[i]);
@@ -134,26 +143,24 @@ export const MinimizedProvider = ({ children }) => {
       }
       i++;
     }
-    
-    let tempTransition = []
+
+    let tempTransition = [];
 
     transitions.map((element) => {
-      if(!inaccessibleState.includes(element.state)){
-        tempTransition.push(element)
+      if (!inaccessibleState.includes(element.state)) {
+        tempTransition.push(element);
       }
-    })
-    transitions = tempTransition
+    });
+    transitions = tempTransition;
 
-
-    let tempState = []
+    let tempState = [];
     states.map((state) => {
-      
-      if(!inaccessibleState.includes(state)){
-        tempState.push(state)
+      if (!inaccessibleState.includes(state)) {
+        tempState.push(state);
       }
-    })
-    setStates(tempState)
-    newStates = tempState
+    });
+    setStates(tempState);
+    newStates = tempState;
     // console.log('Inaccesssible state: ')
     // console.log(inaccessibleState)
     // console.log('New transition: ')
@@ -263,7 +270,7 @@ export const MinimizedProvider = ({ children }) => {
 
   const minimizedDfa = () => {
     //find inaccessible state and remove from the transition table
-    findInaccessibleState()
+    findInaccessibleState();
 
     //Generate all possible pair of states
     generateDfaPairs();
@@ -363,14 +370,18 @@ export const MinimizedProvider = ({ children }) => {
       };
       minimizedTransistionTable.push(temp);
     }
-    setMinimizeResult(minimizedTransistionTable)
+    setMinimizeResult(minimizedTransistionTable);
   };
 
   const handleSubmit = () => {
     handleTransitions();
     minimizedDfa();
-    // console.log('After minimized: ')
-    // console.log(minimizedTransistionTable)
+    console.log("DFA")
+    console.log(dfa)
+    console.log('Before Minimized')
+    console.log(transitions)
+    console.log('After minimized: ')
+    console.log(minimizedTransistionTable)
   };
 
   const handleFinalState = (event) => {
@@ -415,7 +426,7 @@ export const MinimizedProvider = ({ children }) => {
         error,
         setError,
         minimizedResult,
-        setMinimizeResult
+        setMinimizeResult,
       }}
     >
       {children}
