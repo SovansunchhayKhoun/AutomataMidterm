@@ -1,18 +1,18 @@
 import React, {useContext, useEffect} from 'react'
-import { MainContext } from '../context/MainContext'
+import {MainContext} from '../context/MainContext'
 import {TransitionDiagram} from "../components/FAComponents/TransitionDiagram.jsx";
 import * as domain from "domain";
 import {UtilContext} from "../context/UtilContext.jsx";
 
 export const Classify = () => {
   const {setNavBarSelect} = useContext(UtilContext);
-  const { fa, nfa } = useContext(MainContext);
-  const { faStates, faAlphabets, faStartState, faFinalStates } = fa;
+  const {fa, nfa} = useContext(MainContext);
+  const {faStates, faAlphabets, faStartState, faFinalStates} = fa;
   useEffect(() => {
     setNavBarSelect('Classify FA');
   })
   return (
-    <main>
+    <main className={'flex flex-col gap-4'}>
       <section className='flex flex-col gap-2 w-1/2'>
         <div className='flex'>
           <p className='font-semibold'>Your States Q:&nbsp;</p>
@@ -53,13 +53,13 @@ export const Classify = () => {
           </p>
         </div>
 
-        <div className={''}>
-          <TransitionDiagram/>
-        </div>
 
         <div className='bg-blue-950 rounded-md px-12 py-2 text-white'>
           <span>{`This is ${nfa ? 'an NFA' : 'a DFA'}`}</span>
         </div>
+      </section>
+      <section className={''}>
+        <TransitionDiagram/>
       </section>
     </main>
   )

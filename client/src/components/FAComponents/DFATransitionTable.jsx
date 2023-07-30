@@ -4,7 +4,7 @@ import {Table} from 'flowbite-react';
 
 export const DFATransitionTable = () => {
   const {fa, handleTransition} = useContext(MainContext);
-  const {faStates, faAlphabets, faStartState, faFinalStates} = fa
+  const {faStates, faAlphabets, faStartState, faFinalStates, transitionSets} = fa
   if (faStates.length > 0 || faAlphabets.length > 0) {
     return (
       <div className={"p-4 flex w-full border-2 rounded-tl-md rounded-tr-md border-blue-500 flex-col gap-2"}>
@@ -32,7 +32,7 @@ export const DFATransitionTable = () => {
             })}
           </Table.Head>
           <Table.Body className="divide-y">
-            {faStates?.filter(fs => fs !== 'Trap').map((fs, stateKey) => {
+            {faStates?.map((fs, stateKey) => {
               return (
                 <Table.Row key={stateKey} className="bg-white dark:border-gray-700 dark:bg-gray-800">
                   <Table.Cell>
@@ -50,19 +50,34 @@ export const DFATransitionTable = () => {
                     return (
                       <Table.Cell key={alphabetKey}
                                   className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                        <select onChange={(event) => {
-                          handleTransition(event.target.value,
-                            {row: stateKey, transitState: fs},
-                            {col: alphabetKey, transitAlphabet: fa}
+                        {faStates?.map((resultFs, key) => {
+                          return (
+                            <div key={key} className={'flex gap-1 items-center'}>
+                              <input
+                                checked={transitionSets[stateKey][alphabetKey].transitResult.includes(resultFs)}
+                                onChange={(event) => {
+                                  handleTransition(resultFs,
+                                    {row: stateKey, transitState: fs},
+                                    {col: alphabetKey, transitAlphabet: fa}, event
+                                  )
+                                }} type="checkbox"/>
+                              <label htmlFor="">{resultFs}</label>
+                            </div>
                           )
-                        }
-                        } name="" id="">
-                          {faStates?.map((fs, key) => {
-                            return (
-                              <option value={fs} key={key}>{fs}</option>
-                            )
-                          })}
-                        </select>
+                        })}
+                        {/*<select onChange={(event) => {*/}
+                        {/*  handleTransition(event.target.value,*/}
+                        {/*    {row: stateKey, transitState: fs},*/}
+                        {/*    {col: alphabetKey, transitAlphabet: fa}*/}
+                        {/*  )*/}
+                        {/*}*/}
+                        {/*} name="" id="">*/}
+                        {/*  {faStates?.map((fs, key) => {*/}
+                        {/*    return (*/}
+                        {/*      <option value={fs} key={key}>{fs}</option>*/}
+                        {/*    )*/}
+                        {/*  })}*/}
+                        {/*</select>*/}
                       </Table.Cell>
                     )
                   })}

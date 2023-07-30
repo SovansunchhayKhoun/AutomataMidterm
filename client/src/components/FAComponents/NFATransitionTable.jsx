@@ -3,8 +3,8 @@ import React, {useContext} from "react";
 import {MainContext} from "../../context/MainContext.jsx";
 
 export const NFATransitionTable = () => {
-  const {fa} = useContext(MainContext);
-  const {faStates, faAlphabets, faStartState, faFinalStates} = fa
+  const {fa, handleTransition} = useContext(MainContext);
+  const {faStates, faAlphabets, faStartState, faFinalStates, transitionSets} = fa
   if (faStates.length > 0 || faAlphabets.length > 0) {
     return (
       <div className={"p-4 flex w-full border-2 rounded-tl-md rounded-tr-md border-blue-500 flex-col gap-2"}>
@@ -23,19 +23,26 @@ export const NFATransitionTable = () => {
             <Table.HeadCell>
               States
             </Table.HeadCell>
-            {faStates?.map((fs, key) => {
+            {faAlphabets?.map((fa, key) => {
+              return (
+                <Table.HeadCell key={key}>
+                  {fa}
+                </Table.HeadCell>
+              )
+            })}
+            {/* {faStates?.map((fs, key) => {
               return (
                 <Table.HeadCell key={key}>
                   {fs} (RESULT)
                 </Table.HeadCell>
               )
-            })}
+            })} */}
 
           </Table.Head>
           <Table.Body className="divide-y">
-            {faStates?.filter(fs => fs !== 'Trap').map((fs, key) => {
+            {faStates?.filter(fs => fs !== 'Trap').map((fs, stateKey) => {
               return (
-                <Table.Row key={key} className="bg-white dark:border-gray-700 dark:bg-gray-800">
+                <Table.Row key={stateKey} className="bg-white dark:border-gray-700 dark:bg-gray-800">
                   <Table.Cell>
                     {fs === faStartState && <span className='whitespace-nowrap'>
                       Start State: {faStartState} <br/>
@@ -53,20 +60,30 @@ export const NFATransitionTable = () => {
                   <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
                     {fs}
                   </Table.Cell>
-                  {faStates?.map((fs, rowKey) => {
+
+                  {faAlphabets?.map((fa, alphabetKey) => {
                     return (
-                      <Table.Cell key={rowKey} className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                        {faAlphabets?.map((fa, key) => {
+                      <Table.Cell key={alphabetKey}
+                                  className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
+                        {faStates?.map((resultFs, key) => {
                           return (
                             <div key={key} className={'flex gap-1 items-center'}>
-                              <input type="checkbox"/>
-                              <label htmlFor="">{fa}</label>
+                              <input
+                                checked={transitionSets[stateKey][alphabetKey].transitResult.includes(resultFs)}
+                                onChange={(event) => {
+                                  handleTransition(resultFs,
+                                    {row: stateKey, transitState: fs},
+                                    {col: alphabetKey, transitAlphabet: fa}, event
+                                  )
+                                }} type="checkbox"/>
+                              <label htmlFor="">{resultFs}</label>
                             </div>
                           )
                         })}
                       </Table.Cell>
                     )
                   })}
+
                 </Table.Row>
               )
             })}
